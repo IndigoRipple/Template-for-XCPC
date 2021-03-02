@@ -16,7 +16,7 @@ def main ():
                     template += temp_in [:-4]
                     template += "\n"
                     template += "```cpp\n"
-                    f = open(now_file+"\\"+temp+"\\"+temp_in,'r',encoding='utf+8') #,encoding='gbk')
+                    f = open(now_file+"\\"+temp+"\\"+temp_in,'r',encoding='utf-8') #encoding='gbk'
                     f.read(1)
                     template += f.read()
                     template += "\n"
