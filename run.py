@@ -22,7 +22,7 @@ def main ():
                     template += "\n"
                     template += "```\n"
                     f.close()
-    f = open(now_file+"\\"+"template.md",'w',encoding='utf+8') 
+    f = open(now_file+"\\"+"template.md",'w',encoding='utf-8') 
     f.write(template)
     f.close()
     # print(template)
