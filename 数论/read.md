@@ -1,2 +1,0 @@
-arithmetical
-数论
