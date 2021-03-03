@@ -1,327 +1,386 @@
-include <bits/stdc++.h>
+
+#include "stdafx.h"
+#include<iostream>
+#include<cmath>
+#include<algorithm>
+const int maxn=1e6;
+const double eps=1e-8;
+#define INF 1e6;
+#define ll long long;
 using namespace std;
-#define ll long long
-const double eps = 1e-6;
-const int maxn = 1e5 + 7;
-#define sqr(x) ((x) * (x))
-bool dcmp(double a, double b) {
-    return fabs(a - b) < eps;
+struct point{
+	double x,y;
+	  point(){}
+    point(double _x,double _y):x(_x),y(_y){}
+    point operator +(point p)//ÏòÁ¿¼Ó·¨
+    {
+        return point(x+p.x,y+p.y);
+    }
+    point operator -(point p)//ÏòÁ¿¼õ·¨
+    {
+        return point(x-p.x,y-p.y);
+    }
+    double operator *(point p)//ÏòÁ¿²æ³Ë
+    {
+        return x*p.y-y*p.x;
+    }
+    double operator ^(point p)//ÏòÁ¿µã³Ë
+    {
+        return x*p.x+y*p.y;
+    }
+    point operator /(double p)//ÏòÁ¿³ı·¨
+    {
+        return point(x/p,y/p);
+    }
+    point operator *(double p)//ÏòÁ¿³Ë·¨
+    {
+        return point(x*p,y*p);
+	}
+}p[maxn]={};
+/*»ù´¡º¯Êı*/
+double max(double x,double y)
+{
+    return x>y?x:y;
+}
+double min(double x,double y)
+{
+    return x<y?x:y;
+}
+double cross(point a,point b,point c)//²æ»ı
+{
+    return (b-a)*(c-a);
+}
+double dot(point a,point b,point c)//µã»ı
+{
+    return (b-a)^(c-a);
+}
+double len(point a)//ÏòÁ¿³¤¶È
+{
+    return sqrt(a^a);
+}
+double dis(point a,point b)//Á½µã¾àÀë
+{
+    return len(b-a);
+
+}/*ÊäÈëµã*/
+void input(int n)
+{
+	for(int i=0;i<n;i++)
+		cin>>p[i].x>>p[i].y;
 }
 
-class point
-// ç‚¹æˆ–å‘é‡çš„ç±»
+/*ÅĞ¶ÏµãÊÇ·ñÔÚÏß¶ÎÉÏ*/
+bool same_line(point q,point x1,point x2)
 {
-  public:
-    double x, y;
-    void read() {
-        cin >> x >> y;
-    }
-    void print() {
-        cout << x << y;
-    }
-    point operator+(const point &p) const {
-        return {x + p.x, y + p.y};
-    }
-    point operator-(const point &p) const {
-        return {x - p.x, y - p.y};
-    }
-    point operator*(double p) const {
-        return {x * p, y * p};
-    }
-    point operator/(double p) const {
-        return {x / p, y / p};
-    }
-    double operator*(const point &p) const {
-        return x * p.x + y * p.y;
-    }
-    double len() {
-        return sqrt(x * x + y * y);
-    }
-    double dis(const point &p) const {
-        return ((*this) - p).len();
-    }
-    double angle() {
-        return atan2(y, x);
-    }
-} ans[maxn], tmpp[maxn];
-
-int pointcmp(const point &a, const point &b) {
-    if (a.x != b.x)
-        return (a.x < b.x);
-    else
-        return (a.y < b.y);
+	const double esp=1e-8;
+	if(abs((x2.y-q.y)*(x1.x-q.x)-(x1.y-q.y)*(x2.x-q.x))<esp){
+		/*Èç¹ûÅĞ¶ÏÊÇ·ñÔÚÖ±ÏßÉÏ£¬ÔòÕâÀïÖ±½Óreturn true*/
+		if(q.x<=x1.x&&q.x>=x2.x&&q.y<=x1.y&&q.y>=x2.y)
+			return true;
+		if(q.x>=x1.x&&q.x<=x2.x&&q.y>=x1.y&&q.y<=x2.y)
+			return true;
+		return false;
+	}
+	return false;
 }
 
-bool same_line(point x1, point x2, point x3)
-//åˆ¤æ–­ç‚¹æ˜¯å¦åœ¨çº¿æ®µä¸Šï¼Œæ‰€æ±‚ç‚¹ä¸ºx1ï¼Œè‹¥æ”¹ä¸ºç›´çº¿åˆ™åœ¨ifä¸­ç›´æ¥return true
+/*ÅĞ¶ÏµãÊÇ·ñÔÚ¶à±ßĞÎareaÄÚ²¿£¬areaÄÚµÄµãÄæÊ±ÕëÅÅĞò*/
+bool in_the_area(point q,point area[],int n/*¶à±ßĞÎµãµÄÊıÁ¿*/)
 {
-    const double esp = 1e-8;
-    if (abs((x3.y - x1.y) * (x2.x - x1.x) - (x2.y - x1.y) * (x3.x - x1.x)) <
-        esp) {
-        if (x1.x <= x2.x && x1.x >= x3.x && x1.y <= x2.y && x1.y >= x3.y)
-            return true;
-        if (x1.x >= x2.x && x1.x <= x3.x && x1.y >= x2.y && x1.y <= x3.y)
-            return true;
-        return false;
-    }
-    return false;
+	int ans=0;
+	double x;
+	for(int i=1;i<=n;i++){
+		point p1=area[i];
+		point p2=area[i+1];
+		if(same_line(q,p1,p2))return true;
+		if(q.y<min(p1.y,p2.y))continue;
+		if(q.y>=max(p1.y,p2.y))continue;
+		x=(q.y-p1.y)*(p2.x-p1.x)/(p2.y-p1.y)+p1.x;
+		if(x>q.x)ans++;
+	}
+	return(ans%2==1);
 }
 
-bool in_the_area(point p, point area[], int lens)
-//åˆ¤æ–­ç‚¹æ˜¯å¦åœ¨å¤šè¾¹å½¢areaå†…éƒ¨ï¼Œareaå†…çš„ç‚¹é€†æ—¶é’ˆæ’åºï¼Œlensä¸ºå¤šè¾¹å½¢ç‚¹çš„æ•°é‡ï¼Œsame_lineç”¨æ¥åŒºåˆ†è¾¹ç•Œç‚¹ç®—å†…éƒ¨è¿˜æ˜¯å¤–éƒ¨
+/*²æ³Ë*/
+long long crossmulti(point p1,point p2,point p0)
 {
-    int ans = 0;
-    double x;
-    for (int i = 1; i <= lens; i++) {
-        point p1 = area[i];
-        point p2 = area[i + 1];
-        if (same_line(p, p1, p2)) return true;
-        if (p1.y == p2.y) continue;
-        if (p.y < min(p1.y, p2.y)) continue;
-        if (p.y >= max(p1.y, p2.y)) continue;
-        x = (p.y - p1.y) * (p2.x - p1.x) / (p2.y - p1.y) + p1.x;
-        if (x > p.x) ans++;
-    }
-    return (ans % 2 == 1);
-}
+	long long x1 = p1.x - p0.x;
+    long long y1 = p1.y - p0.y;
 
-ll multi(point p1, point p2, point p0)
-// å‰ä¹˜
-{
-    ll x1 = p1.x - p0.x;
-    ll y1 = p1.y - p0.y;
-
-    ll x2 = p2.x - p0.x;
-    ll y2 = p2.y - p0.y;
+    long long x2 = p2.x - p0.x;
+    long long y2 = p2.y - p0.y;
 
     return (x1 * y2 - x2 * y1);
 }
 
-int ConvexHull(int n, point p[], point ch[])
-// å‡¸åŒ…ï¼Œç‚¹pï¼Œè¾“å‡ºchï¼Œå¦‚æœä¸‰ç‚¹å…±çº¿ç®—å‡¸åŒ…ï¼Œé‚£ä¹ˆæŠŠå°äºå·æ”¹ä¸ºå°äºç­‰äºå·
+/*ÇóÏòÁ¿Íâ»ı*/
+double cross(point x1,point x2)
 {
-    sort(p, p + n, pointcmp);
-    int m = 0;
-    for (int i = 0; i < n; i++) {
-        while (m > 1 && multi(ch[m - 1], p[i], ch[m - 2]) < 0)
-            m--;
-        ch[m++] = p[i];
-    }
-    int k = m;
-    for (int i = n - 2; i >= 0; i--) {
-        while (m > k && multi(ch[m - 1], p[i], ch[m - 2]) < 0)
-            m--;
-        ch[m++] = p[i];
-    }
-    if (n > 1) m--;
-    return m;
+	return x1.x*x2.y-x1.y*x2.x;
 }
 
-int cnt(int x, int y, int m) {
-    x = x % m;
-    y = y % m;
-    if (x <= y)
-        return y - x + 1;
-    else
-        return y + m - x + 1;
+/*ÇóÍ¹¶à±ßĞÎÃæ»ı*/
+double area(point s[],int n)
+{
+	double ret=0;
+	s[n+1]=s[1];
+	for(int i=1;i<=n;i++)
+		ret+=cross(s[i],s[i+1]);
+	return fabs(ret/2);
+}
+/*ÇóÁ½µã¾àÀë*/
+double getd(point x1,point x2)
+{
+	return sqrt((x1.x-x2.x)*(x1.x-x2.x)+(x1.y-x2.y)*(x1.y-x2.y));
 }
 
-double Rotating_Caliper(int m, point ch[])
-// æ—‹è½¬å¡å£³ï¼Œiï¼Œjæ˜¯ä¿©ç‚¹
+/*ÈıµãÇóÔ²ĞÄ*/
+point geto(point p1,point p2,point p3)
 {
-    ch[m + 1] = ch[1];
-    int j = 2;
-    double ans = 0;
-    for (int i = 1; i <= m; i++) {
-        while (fabs(multi(ch[i], ch[i + 1], ch[j])) <
-               fabs(multi(ch[i], ch[i + 1], ch[j + 1]))) {
+	point res;
+	double a=p2.x-p1.x;
+	double b=p2.y-p1.y;
+	double c=p3.x-p2.x;
+	double d=p3.y-p2.y;
+	double e=(p2.x)*(p2.x)+(p2.y)*(p2.y)-(p1.x)*(p1.x)-(p1.y)*(p1.y);
+	double f=(p3.x)*(p3.x)+(p3.y)*(p3.y)-(p2.x)*(p2.x)-(p2.y)*(p2.y);
+	res.x=(f*b-e*d)/(c*b-a*d)/2.0;
+	res.y=(a*f-e*c)/(a*d-b*c)/2.0;
+	return res;
+}
+
+/*×îĞ¡Ô²¸²¸Ç*/
+void mincir(point &o,double &r, point p[],int n)
+{
+	o=p[1];
+	r=0;
+	for(int i=0;i<n;++i){
+		if(getd(p[i],o)-r>eps){
+			o=p[i];
+			r=0;
+			for(int j=0;j<i;j++){
+				if(getd(p[j],o)-r>eps){
+					o.x=(p[i].x+p[j].x)/2.0;
+					o.y=(p[i].y+p[j].y)/2.0;
+				r=getd(p[i],p[j])/2.0;
+				for(int k=0;k<j;++k)
+					if(getd(p[k],o)-r>eps){
+						o=geto(p[i],p[j],p[k]);
+						r=getd(p[i],o);
+					}
+				}
+			}
+		}
+	}
+}
+
+/*Í¹°üÎÊÌâ*/
+
+//¼«½ÇÅÅĞò,¼«½ÇÏàÍ¬Ôò°´³¤¶ÈÅÅĞò
+int cmp(point a,point b)
+{
+	double temp=cross(p[0],a,b);
+	if(temp>0)
+		return 1;
+	else
+		if(fabs(temp)<eps&&dis(p[0],a)<dis(p[0],b))
+			return 1;
+		else
+			return 0;
+}
+void sortpoint(int n)
+{
+	int i,k;
+	point start;
+	start=p[0];
+	k=0;
+	for(i=1;i<n;i++)
+	{
+		if((start.y>p[i].y)||(fabs(start.y-p[i].y)<eps&&start.x>p[i].x))	
+		{
+			start=p[i];
+			k=i;
+		}
+	}
+	p[k]=p[0];
+	p[0]=start;
+	sort(p+1,p+n,cmp);
+}
+void be_weight(int val)//È¥ÖØ
+{
+	int temp=val;
+	int n=1;
+	for(int i=1;i<temp;i++)
+	{
+		if(fabs(p[i-1].x-p[i].x)<eps&&fabs(p[i-1].y-p[i].y)<eps)
+			continue;
+		p[n++]=p[i];
+	}
+}
+int convexhull(point p[],point ch[],int n)
+{
+	int i;
+	int cnt=0;
+	if(n==1)
+	{
+		ch[0]=p[0];
+		cnt=1;
+	}
+	else
+		if(n==2)
+		{
+			ch[0]=p[0];
+			ch[1]=p[1];
+			ch[2]=p[2];
+			cnt=2;
+		}
+		else
+		{
+			ch[0]=p[n-1];
+			ch[1]=p[0];
+			ch[2]=p[1];
+			cnt=2;
+			for(i=2;i<n;i++)
+			{
+				while(cross(ch[cnt-1],ch[cnt],p[i])<0)//µ¯³ö²»ºÏ·¨µã
+					cnt--;
+				ch[++cnt]=p[i];
+			}
+		}
+		return cnt;
+}
+
+/*ÇóÍ¹°üÖÜ³¤*/
+double perimeter(int cnt,point ch[])
+{
+	double sum=0;
+	for(int i=1;i<=cnt;i++)
+		sum+=dis(ch[i-1],ch[i]);
+	return sum;
+}
+
+/*ÇóÍ¹°üÃæ»ı*/
+double area(int cnt,point ch[])
+{
+	double sum=0;
+	point p(0,0);
+	for(int i=1;i<=cnt;i++)
+		sum+=cross(p,ch[i-1],ch[i]);
+	return fabs(sum/2.0);
+}
+
+/*Çó¶à±ßĞÎÖØĞÄ*/
+point bartcenter(int n,point p[])
+{
+	double sum=0;
+	point ret(0.0,0.0);
+		for(int i=2;i<n;i++)
+		{
+			double area=cross(p[0],p[i-1],p[i]);
+			sum+=area;
+			ret=ret+(p[0]+p[i-1]+p[i])/3.0*area;
+		}
+		ret=ret/sum;
+		return ret;
+}
+
+/*Ğı×ª¿¨¿Ç*/
+/*ÇóÍ¹°üÖ±¾¶-×î´óµã¶Ô¾àÀë*/
+double diameter(int cnt,point p[])
+{
+	double maxn=0;
+	int j=1;
+	for(int i=1;i<cnt;i++)
+	{
+		while(fabs(cross(p[i-1],p[i],p[(j+1)%cnt]))>fabs(cross(p[i-1],p[i],p[j%cnt])))
+			j++;
+		maxn=max(maxn,dis(p[i-1],p[j%cnt]));
+		maxn=max(maxn,dis(p[i],p[j%cnt]));
+	}
+	return maxn;
+}
+
+/*ÇóÃæ»ı×î´óÈı½ÇĞÎ*/
+double maxtriangle(int cnt,point p[])
+{
+    double maxn=0;
+    int j=1;
+    int k=1;
+    for(int i=1;i<=cnt;i++)
+    {
+        while(fabs(cross(p[i-1],p[j%cnt],p[(k+1)%cnt]))>fabs(cross(p[i-1],p[j%cnt],p[k%cnt])))
+            k++;
+        maxn=max(maxn,fabs(cross(p[i-1],p[j%cnt],p[k%cnt])));
+        while(fabs(cross(p[i-1],p[(j+1)%cnt],p[k%cnt]))>fabs(cross(p[i-1],p[j%cnt],p[k%cnt])))
             j++;
-            if (j > m) j = 1;
-        }
-        ans = max(ans, (ch[i] - ch[j]).len());
+        maxn=max(maxn,fabs(cross(p[i-1],p[j%cnt],p[k%cnt])));
     }
-    return ans;
+    return maxn/2.0;
 }
 
-double cross(point a, point b)
-//æ±‚å‘é‡å¤–ç§¯
+/*ÇóÃæ»ı×îĞ¡»·ÈÆ¾ØĞÎ*/
+
+double minrectangleS(int cnt,point q[])
 {
-    return a.x * b.y - a.y * b.x;
+   double S=INF;
+    if(cnt<=2)
+    {
+        if(cnt==1)
+           return 0.0;
+        else
+           return 0.0;
+    }
+
+    int j,k,r;
+    double h,w;
+    j=k=r=1;
+    for(int i=1;i<=cnt;i++)
+    {
+        double L=dis(q[i-1],q[i]);
+        while(fabs(cross(q[i-1],q[i],q[(j+1)%cnt]))>fabs(cross(q[i-1],q[i],q[j%cnt])))
+            j++;
+        h=fabs(cross(q[i-1],q[i],q[j%cnt]))/L;
+        while(dot(q[i-1],q[i],q[(k+1)%cnt])>dot(q[i-1],q[i],q[k%cnt]))
+            k++;
+        if(i==1)
+            r=k;
+        while(dot(q[i-1],q[i],q[(r+1)%cnt])<=dot(q[i-1],q[i],q[r%cnt]))
+            r++;
+        w=(dot(q[i-1],q[i],q[k%cnt])-dot(q[i-1],q[i],q[r%cnt]))/L;
+        S=min(S,w*h);
+    }
+    return S;
 }
 
-double area(point s[], int n)
-//æ±‚å‡¸å¤šè¾¹å½¢é¢ç§¯
+/*ÇóÖÜ³¤×îĞ¡»·ÈÆ¾ØĞÎ*/
+double minrectangleC(int cnt,point q[])
 {
-    double ret = 0;
-    s[n + 1] = s[1];
-    for (int i = 1; i <= n; i++)
-        ret += cross(s[i], s[i + 1]);
-    return fabs(ret / 2);
-}
-
-double getd(point a, point b)
-//æ±‚ç›´å¾„
-{
-    return sqrt(sqr(a.x - b.x) + sqr(a.y - b.y));
-}
-
-point geto(point p1, point p2, point p3)
-//æ±‚åœ†å¿ƒ
-{
-    point res;
-    double a = p2.x - p1.x;
-    double b = p2.y - p1.y;
-    double c = p3.x - p2.x;
-    double d = p3.y - p2.y;
-    double e = sqr(p2.x) + sqr(p2.y) - sqr(p1.x) - sqr(p1.y);
-    double f = sqr(p3.x) + sqr(p3.y) - sqr(p2.x) - sqr(p2.y);
-    res.x = (f * b - e * d) / (c * b - a * d) / 2.0;
-    res.y = (a * f - e * c) / (a * d - b * c) / 2.0;
-    return res;
-}
-
-void mincir(point &o, double &r, point p[], int n)
-// æœ€å°åœ†è¦†ç›–
-{
-    o = p[1];
-    r = 0;
-    for (int i = 0; i < n; ++i) {
-        if (getd(p[i], o) - r > eps) { //ä¸åœ¨åœ†å†…
-            o = p[i];
-            r = 0;
-            for (int j = 0; j < i; j++) {
-                if (getd(p[j], o) - r > eps) { //ä¸åœ¨åœ†å†…
-                    o = (point){(p[i].x + p[j].x) / 2.0,
-                                (p[i].y + p[j].y) / 2.0};
-                    r = getd(p[i], p[j]) / 2.0;
-                    for (int k = 0; k < j; ++k)
-                        if (getd(p[k], o) - r > eps) {  //ä¸åœ¨åœ†å†…
-                            o = geto(p[i], p[j], p[k]); //å¤–æ¥åœ†
-                            r = getd(p[i], o);
-                        }
-                }
-            }
-        }
+	double C=INF;
+    if(cnt<=2)
+    {
+        if(cnt==1)
+           return 0.0;
+        else
+           return 2*dis(p[0],p[1]);
     }
-}
 
-struct line
-// çº¿
-{
-    point s, t;
-    double a, b, c;
-    double ang;
-    void getline(point a, point b) {
-        s = a, t = b;
-        ang = (t - s).angle();
+    int j,k,r;
+    double h,w;
+    j=k=r=1;
+    for(int i=1;i<=cnt;i++)
+    {
+        double L=dis(q[i-1],q[i]);
+        while(fabs(cross(q[i-1],q[i],q[(j+1)%cnt]))>fabs(cross(q[i-1],q[i],q[j%cnt])))
+            j++;
+        h=fabs(cross(q[i-1],q[i],q[j%cnt]))/L;
+        while(dot(q[i-1],q[i],q[(k+1)%cnt])>dot(q[i-1],q[i],q[k%cnt]))
+            k++;
+        if(i==1)
+            r=k;
+        while(dot(q[i-1],q[i],q[(r+1)%cnt])<=dot(q[i-1],q[i],q[r%cnt]))
+            r++;
+        w=(dot(q[i-1],q[i],q[k%cnt])-dot(q[i-1],q[i],q[r%cnt]))/L;
+        C=min(C,(w+h)*2);
     }
-    line() {
-    }
-    line(point x, point y) {
-        this->s = x, this->t = y, this->ang = (x - y).angle();
-        if (fabs(x.x - y.x) < eps) {
-            a = 1, c = -x.x, b = 0;
-        } else if (fabs(x.y - y.y) < eps) {
-            a = 0, b = 1, c = -x.y;
-        } else {
-            a = x.y - y.y, b = y.x - x.x,
-            c = (x.x - y.x) * y.y - (x.y - y.y) * y.x;
-        }
-    }
-} li[maxn], tmpl[maxn];
-
-point intersection(line a, line b)
-// äº¤ç‚¹
-{
-    return a.s + (a.t - a.s) * (cross(a.s - b.s, b.t - b.s) /
-                                cross(b.t - b.s, a.t - a.s));
-}
-
-bool parallel(line a, line b)
-//å¹³è¡Œ
-{
-    return dcmp(cross(a.t - a.s, b.t - b.s), 0);
-}
-
-bool isrig(line a, point b)
-//åˆ¤æ–­ç‚¹æ˜¯å¦åœ¨å‘é‡å³è¾¹
-{
-    return cross(a.t - a.s, b - a.s) + eps < 0;
-}
-
-bool linecmp(line a, line b)
-// æè§’åº
-{
-    return dcmp(a.ang, b.ang) ? cross(a.t - a.s, b.t - a.s) + eps < 0
-                              : a.ang < b.ang;
-}
-
-int l, r;
-
-bool SI(line *li, int n, point *ret, int &m, line *ql, point *qp)
-// åŠå¹³é¢äº¤ï¼Œliæ˜¯å‘é‡é›†åˆï¼Œnæ˜¯æ•°é‡ï¼Œretæ˜¯ç­”æ¡ˆï¼Œqlå’Œqpæ˜¯ä¸´æ—¶çš„ï¼Œæ±‚çš„æ˜¯å·¦ä¾§çš„åŠå¹³é¢äº¤
-{
-    sort(li + 1, li + 1 + n, linecmp);
-    ql[l = r = 1] = li[1];
-    for (int i = 2; i <= n; i++)
-        if (!dcmp(li[i].ang, li[i - 1].ang)) {
-            while (l < r && isrig(li[i], qp[r - 1]))
-                --r;
-            while (l < r && isrig(li[i], qp[l]))
-                ++l;
-            if (l <= r) qp[r] = intersection(ql[r], li[i]);
-            ql[++r] = li[i];
-            if (l < r &&
-                (parallel(ql[l], ql[l + 1]) || parallel(ql[r], ql[r - 1])))
-                return false;
-        }
-    while (l < r && isrig(ql[l], qp[r - 1]))
-        --r;
-    while (l < r && isrig(ql[r], qp[l]))
-        ++l;
-    if (r - l <= 1) return false;
-    qp[r] = intersection(ql[l], ql[r]);
-    m = 0;
-    for (int i = l; i <= r; i++)
-        ret[++m] = qp[i];
-    return true;
-}
-
-struct Point
-// ä¸‰ç»´
-{
-    double x, y, z;
-    void read() {
-        scanf("%lf%lf%lf", &x, &y, &z);
-    }
-    Point operator+(const Point &p) const {
-        return {x + p.x, y + p.y, z + p.z};
-    }
-    Point operator-(const Point &p) const {
-        return {x - p.x, y - p.y, z - p.z};
-    }
-    Point operator*(double p) const {
-        return {x * p, y * p, z * p};
-    }
-    Point operator/(double p) const {
-        return {x / p, y / p, z / p};
-    }
-    Point operator*(const Point &p) const {
-        return {y * p.z - z * p.y, -x * p.z + z * p.x, x * p.y - y * p.x};
-    }
-    double operator^(const Point &p) const {
-        return x * p.x + y * p.y + z * p.z;
-    }
-    double len() {
-        return sqrt(x * x + y * y + z * z);
-    }
-    double dis(const Point &p) const {
-        return ((*this) - p).len();
-    }
-};
-
-point a[maxn], b[maxn];
-
-int main() {
-    return 0;
+   return C;
 }
