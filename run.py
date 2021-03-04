@@ -18,15 +18,7 @@ def main ():
                     template += "\n"
                     template += "```cpp\n"
                     encode = chardet.detect(open(now_file+"\\"+temp+"\\"+temp_in,'rb').read())['encoding'] #判断编码格式
-                    #print(encode)
-                    if(encode == 'utf-8') :
-                        f = open(now_file+"\\"+temp+"\\"+temp_in,'r',encoding='utf-8') 
-                    elif(encode == 'GB2312') :
-                        f = open(now_file+"\\"+temp+"\\"+temp_in,'r',encoding='GB2312') 
-                    elif(encode == 'UTF-8-SIG') :
-                        f = open(now_file+"\\"+temp+"\\"+temp_in,'r',encoding='UTF-8-SIG') 
-                    else :
-                        continue
+                    f = open(now_file+"\\"+temp+"\\"+temp_in,'r',encoding=encode) 
                     f.read(1)
                     template += f.read()
                     template += "\n"
