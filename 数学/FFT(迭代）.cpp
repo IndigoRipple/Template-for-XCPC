@@ -39,7 +39,7 @@ struct complex{
 			}
 		}
 	}
-	void FFT(int n,int m)//输出多项式各系数
+	void FFT(int n,int m)//杈撳嚭澶氶」寮忓悇绯绘暟
 	{
 		for(int i=0;i<=n;i++)
 			cin>>f[i].R;
@@ -47,16 +47,11 @@ struct complex{
 			cin>>g[i].R;
 		while(lim<=n+m)lim<<=1,len++;
 		for(int i=1;i<lim;i++){
-			rev[i]=(rev[i>>1]>>1)|((i&1)<<(len-1));//位逆序置换
+			rev[i]=(rev[i>>1]>>1)|((i&1)<<(len-1));//浣嶉�嗗簭缃崲
 		}
 		DFT(f,1),DFT(g,1);
 		for(int i=0;i<=lim;i++){
 			cout<<(int)(f[i].R/(double)lim+0.5)<<" ";
 		}
 		return;
-	}
-	int main()
-	{
-		cout<<"YYY";
-		return 0;
 	}
