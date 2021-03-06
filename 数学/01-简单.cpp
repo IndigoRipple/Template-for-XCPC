@@ -3,7 +3,7 @@ int gcd(int a, int b) {
     return a;
 }
 
-int power(int x, int n) {
+int power(int x, int n, const int& mod = mod) {
     int ret = 1;
     while (n) {
         if (n & 1) ret = 1LL * ret * x % mod;
@@ -39,14 +39,44 @@ matrix power(matrix x, int n) {
 }
 
 // ax + by = gcd(a, b)
-int gcd(int a, int b, int& x, int& y) {
+int exgcd(int a, int b, int& x, int& y) {
     x = 1, y = 0;
     int x1 = 0, y1 = 1;
     while (b) {
         int t = a / b;
         tie(x, x1) = make_tuple(x1, x - t * x1);
-        tie(y, y1) = make_tuple(y1, y - q * y1);
-        tie(a, b) = make_tuple(b, a - q * b);
+        tie(y, y1) = make_tuple(y1, y - t * y1);
+        tie(a, b) = make_tuple(b, a - t * b);
     }
     return a;
+}
+
+// p must be a prime
+inline int inverse(const int& x) {
+    return power(x, mod - 2, mod);
+}
+
+int C(const int& n, int m) {
+    int ret = 1;
+    m = min(m, n - m);
+    for (int i = 0; i < m; ++i) ret = 1LL * ret * (n - i) % mod * inverse(i + 1) % mod;
+    return ret;
+}
+
+int A(const int& n, const int& m) {
+    int ret = 1;
+    for (int i = 0; i < m; ++i) ret = 1LL * ret * (n - i) % mod;
+    return ret;
+}
+
+bool notprime[];
+int prime[], primecnt = 0;
+void sieve(const int& n) {
+    for (int i = 2; i <= n; ++i) {
+        if (!notprime[i]) prime[primecnt++] = i;
+        for (int j = 0; j < primecnt && 1LL * i * prime[j] <= n; ++j) {
+            notprime[i * prime[j]] = 1;
+            if (!(i % prime[j])) break;
+        }
+    }
 }
