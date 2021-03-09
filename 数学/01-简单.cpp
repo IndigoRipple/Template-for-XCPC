@@ -52,14 +52,14 @@ int exgcd(int a, int b, int& x, int& y) {
 }
 
 // p must be a prime
-inline int inverse(const int& x) {
+inline int inv(const int& x, const int& mod = mod) {
     return power(x, mod - 2, mod);
 }
 
 int C(const int& n, int m) {
     int ret = 1;
     m = min(m, n - m);
-    for (int i = 0; i < m; ++i) ret = 1LL * ret * (n - i) % mod * inverse(i + 1) % mod;
+    for (int i = 0; i < m; ++i) ret = 1LL * ret * (n - i) % mod * inv(i + 1) % mod;
     return ret;
 }
 
@@ -79,4 +79,10 @@ void sieve(const int& n) {
             if (!(i % prime[j])) break;
         }
     }
+}
+
+long long multi(const long long& x, const long long& y, const long long& mod = mod) {
+    long long temp = (long double)x / mod * y;
+    long long res = (unsigned long long)x * y - (unsigned long long)temp * mod;
+    return (res + mod) % mod;
 }
