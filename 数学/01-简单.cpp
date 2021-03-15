@@ -51,7 +51,7 @@ int exgcd(int a, int b, int& x, int& y) {
     return a;
 }
 
-// p must be a prime
+// p 要是质数
 inline int inv(const int& x, const int& mod = mod) {
     return power(x, mod - 2, mod);
 }
