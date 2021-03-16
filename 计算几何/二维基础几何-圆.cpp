@@ -1,4 +1,4 @@
-// ÓëÔ²Ïà¹Ø.cpp : ¶¨Òå¿ØÖÆÌ¨Ó¦ÓÃ³ÌĞòµÄÈë¿Úµã¡£
+// ä¸åœ†ç›¸å…³.cpp : å®šä¹‰æ§åˆ¶å°åº”ç”¨ç¨‹åºçš„å…¥å£ç‚¹ã€‚
 //
 
 #include "stdafx.h"
@@ -7,7 +7,7 @@
 struct point{
 	double x,y;};  
  
-/*»ù´¡º¯Êı*/
+/*åŸºç¡€å‡½æ•°*/
 double xmult(point p1,point p2,point p0){  
     return (p1.x-p0.x)*(p2.y-p0.y)-(p2.x-p0.x)*(p1.y-p0.y);  
 }  
@@ -30,13 +30,13 @@ point intersection(point u1,point u2,point v1,point v2){
 }  
   
   
-/*ÅĞÖ±ÏßºÍÔ²Ïà½»,°üÀ¨ÏàÇĞ */
+/*åˆ¤ç›´çº¿å’Œåœ†ç›¸äº¤,åŒ…æ‹¬ç›¸åˆ‡ */
 int intersect_line_circle(point c,double r,point l1,point l2){  
     return disptoline(c,l1,l2)<r+eps;  
 }  
   
   
-/*ÅĞÏß¶ÎºÍÔ²Ïà½»,°üÀ¨¶ËµãºÍÏàÇĞ */
+/*åˆ¤çº¿æ®µå’Œåœ†ç›¸äº¤,åŒ…æ‹¬ç«¯ç‚¹å’Œç›¸åˆ‡ */
 int intersect_seg_circle(point c,double r,point l1,point l2){  
     double t1=distance(c,l1)-r,t2=distance(c,l2)-r;  
     point t=c;  
@@ -48,13 +48,13 @@ int intersect_seg_circle(point c,double r,point l1,point l2){
 }  
   
   
-/*ÅĞÔ²ºÍÔ²Ïà½»,°üÀ¨ÏàÇĞ */
+/*åˆ¤åœ†å’Œåœ†ç›¸äº¤,åŒ…æ‹¬ç›¸åˆ‡ */
 int intersect_circle_circle(point c1,double r1,point c2,double r2){  
     return distance(c1,c2)<r1+r2+eps&&distance(c1,c2)>fabs(r1-r2)-eps;  
 }  
   
   
-/* ¼ÆËãÔ²ÉÏµ½µãp×î½üµã,ÈçpÓëÔ²ĞÄÖØºÏ,·µ»Øp±¾Éí */
+/* è®¡ç®—åœ†ä¸Šåˆ°ç‚¹pæœ€è¿‘ç‚¹,å¦‚pä¸åœ†å¿ƒé‡åˆ,è¿”å›pæœ¬èº« */
 point dot_to_circle(point c,double r,point p){  
     point u,v;  
     if (distance(p,c)<eps)  
@@ -67,8 +67,8 @@ point dot_to_circle(point c,double r,point p){
 }  
   
   
-/*¼ÆËãÖ±ÏßÓëÔ²µÄ½»µã,Ğè±£Ö¤Ö±ÏßÓëÔ²ÓĞ½»µã  */
-/*¼ÆËãÏß¶ÎÓëÔ²µÄ½»µã(¿ÉÓÃÕâ¸öº¯ÊıºóÅĞµãÊÇ·ñÔÚÏß¶ÎÉÏ)  */
+/*è®¡ç®—ç›´çº¿ä¸åœ†çš„äº¤ç‚¹,éœ€ä¿è¯ç›´çº¿ä¸åœ†æœ‰äº¤ç‚¹  */
+/*è®¡ç®—çº¿æ®µä¸åœ†çš„äº¤ç‚¹(å¯ç”¨è¿™ä¸ªå‡½æ•°ååˆ¤ç‚¹æ˜¯å¦åœ¨çº¿æ®µä¸Š)  */
 void intersection_line_circle(point c,double r,point l1,point l2,point& p1,point& p2){  
     point p=c;  
     double t;  
@@ -83,7 +83,7 @@ void intersection_line_circle(point c,double r,point l1,point l2,point& p1,point
 }  
   
   
-/*¼ÆËãÔ²ÓëÔ²µÄ½»µã,Ğè±£Ö¤Ô²ÓëÔ²ÓĞ½»µã,Ô²ĞÄ²»ÖØºÏ  */
+/*è®¡ç®—åœ†ä¸åœ†çš„äº¤ç‚¹,éœ€ä¿è¯åœ†ä¸åœ†æœ‰äº¤ç‚¹,åœ†å¿ƒä¸é‡åˆ  */
 void intersection_circle_circle(point c1,double r1,point c2,double r2,point& p1,point& p2){  
     point u,v;  
     double t;  
@@ -96,14 +96,14 @@ void intersection_circle_circle(point c1,double r1,point c2,double r2,point& p1,
 }  
   
   
-/*½«ÏòÁ¿pÄæÊ±ÕëĞı×ªangle½Ç¶È  */
+/*å°†å‘é‡pé€†æ—¶é’ˆæ—‹è½¬angleè§’åº¦  */
 point Rotate(point p,double angle) {  
     point res;  
     res.x=p.x*cos(angle)-p.y*sin(angle);  
     res.y=p.x*sin(angle)+p.y*cos(angle);  
     return res;  
 }  
-/*ÇóÔ²ÍâÒ»µã¶ÔÔ²(o,r)µÄÁ½¸öÇĞµãresult1ºÍresult2  */
+/*æ±‚åœ†å¤–ä¸€ç‚¹å¯¹åœ†(o,r)çš„ä¸¤ä¸ªåˆ‡ç‚¹result1å’Œresult2  */
 void TangentPoint_PC(point poi,point o,double r,point &result1,point &result2) {  
     double line=sqrt((poi.x-o.x)*(poi.x-o.x)+(poi.y-o.y)*(poi.y-o.y));  
     double angle=acos(r/line);  
