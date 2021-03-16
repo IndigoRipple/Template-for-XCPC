@@ -1,4 +1,4 @@
-// ÈıÎ¬¼ÆËã¼¸ºÎ.cpp : ¶¨Òå¿ØÖÆÌ¨Ó¦ÓÃ³ÌĞòµÄÈë¿Úµã¡£
+// ä¸‰ç»´è®¡ç®—å‡ ä½•.cpp : å®šä¹‰æ§åˆ¶å°åº”ç”¨ç¨‹åºçš„å…¥å£ç‚¹ã€‚
 //
 
 #include "stdafx.h"
@@ -14,15 +14,15 @@ struct line{
 struct plane{
 	point a,b,c;
 };  
-/*ÏòÁ¿³¤¶È*/
+/*å‘é‡é•¿åº¦*/
 double vlen(point a){
 	return sqrt((a.x)*(a.x)+(a.y)*(a.y)+(a.z)*(a.z));
 }
-/*Ö±Ïß³¤¶È*/
+/*ç›´çº¿é•¿åº¦*/
 double dis(point a,point b){
 	return sqrt((a.x-b.x)*(a.x-b.x)+(a.y-b.y)*(a.y-b.y)+(a.z-b.z)*(a.z-b.z));
 }
-/*²æ»ı*/
+/*å‰ç§¯*/
 point xmult(point a,point b){  
     point ret;  
     ret.x=a.y*b.z-a.z*b.y;  
@@ -30,11 +30,11 @@ point xmult(point a,point b){
     ret.z=a.x*b.y-a.y*b.x;  
     return ret;  
 }  
-/*µã»ı*/
+/*ç‚¹ç§¯*/
 double dmult(point a,point b){  
     return a.x*b.x+a.y*b.y+a.z*b.z;  
 }  
-/*Ê¸²î*/
+/*çŸ¢å·®*/
 point subt(point a,point b){  
     point ret;  
     ret.x=a.x-b.x;  
@@ -42,76 +42,76 @@ point subt(point a,point b){
     ret.z=a.z-b.z;  
     return ret;  
 }  
-/*Æ½Ãæ·¨ÏòÁ¿*/////////////////////////////////////////////////////////////////////////////////////////////////////////
-//¸ø³öÆ½Ãæ
+/*å¹³é¢æ³•å‘é‡*/////////////////////////////////////////////////////////////////////////////////////////////////////////
+//ç»™å‡ºå¹³é¢
 point pvec(plane s){  
     return xmult(subt(s.a,s.b),subt(s.b,s.c));  
 }  
-//¸ø³öÈıµã
+//ç»™å‡ºä¸‰ç‚¹
 point pvec(point s1,point s2,point s3){  
     return xmult(subt(s1,s2),subt(s2,s3));  
 }  
-/*ÅĞÈıµã¹²Ïß*/
+/*åˆ¤ä¸‰ç‚¹å…±çº¿*/
 int dots_inline(point p1,point p2,point p3){  
     return vlen(xmult(subt(p1,p2),subt(p2,p3)))<eps;  
 }  
-/*ÅĞËÄµã¹²Ãæ*/
+/*åˆ¤å››ç‚¹å…±é¢*/
 int dots_onplane(point a,point b,point c,point d){  
     return zero(dmult(pvec(a,b,c),subt(d,a)));  
 }  
-/*ÅĞµãÊÇ·ñÔÚÏß¶ÎÉÏ*/
-//°üÀ¨¶ËµãºÍ¹²Ïß  
- //¸ø¶¨µãÏß
+/*åˆ¤ç‚¹æ˜¯å¦åœ¨çº¿æ®µä¸Š*/
+//åŒ…æ‹¬ç«¯ç‚¹å’Œå…±çº¿  
+ //ç»™å®šç‚¹çº¿
 int dot_online_in(point p,line l){  
     return zero(vlen(xmult(subt(p,l.a),subt(p,l.b))))&&(l.a.x-p.x)*(l.b.x-p.x)<eps&&  
         (l.a.y-p.y)*(l.b.y-p.y)<eps&&(l.a.z-p.z)*(l.b.z-p.z)<eps;  
 }  
- //¸ø¶¨Èıµã
+ //ç»™å®šä¸‰ç‚¹
 int dot_online_in(point p,point l1,point l2){  
     return zero(vlen(xmult(subt(p,l1),subt(p,l2))))&&(l1.x-p.x)*(l2.x-p.x)<eps&&  
         (l1.y-p.y)*(l2.y-p.y)<eps&&(l1.z-p.z)*(l2.z-p.z)<eps;  
 }    
-//²»°üÀ¨¶Ëµã  
- //¸ø¶¨µãÏß
+//ä¸åŒ…æ‹¬ç«¯ç‚¹  
+ //ç»™å®šç‚¹çº¿
 int dot_online_ex(point p,line l){  
     return dot_online_in(p,l)&&(!zero(p.x-l.a.x)||!zero(p.y-l.a.y)||!zero(p.z-l.a.z))&&  
         (!zero(p.x-l.b.x)||!zero(p.y-l.b.y)||!zero(p.z-l.b.z));  
 }  
- //¸ø¶¨Èıµã
+ //ç»™å®šä¸‰ç‚¹
 int dot_online_ex(point p,point l1,point l2){  
     return dot_online_in(p,l1,l2)&&(!zero(p.x-l1.x)||!zero(p.y-l1.y)||!zero(p.z-l1.z))&&  
         (!zero(p.x-l2.x)||!zero(p.y-l2.y)||!zero(p.z-l2.z));  
 }  
   
   
-/*ÅĞµãÊÇ·ñÔÚ¿Õ¼äÈı½ÇĞÎÉÏ*//////////////////////////////////////////////////////////////////////////////////////////
-//°üÀ¨±ß½ç
- //¸ø¶¨µãÃæ
+/*åˆ¤ç‚¹æ˜¯å¦åœ¨ç©ºé—´ä¸‰è§’å½¢ä¸Š*//////////////////////////////////////////////////////////////////////////////////////////
+//åŒ…æ‹¬è¾¹ç•Œ
+ //ç»™å®šç‚¹é¢
 int dot_inplane_in(point p,plane s){  
     return zero(vlen(xmult(subt(s.a,s.b),subt(s.a,s.c)))-vlen(xmult(subt(p,s.a),subt(p,s.b)))-  
         vlen(xmult(subt(p,s.b),subt(p,s.c)))-vlen(xmult(subt(p,s.c),subt(p,s.a))));  
 }  
- //¸ø¶¨ËÄµã
+ //ç»™å®šå››ç‚¹
 int dot_inplane_in(point p,point s1,point s2,point s3){  
     return zero(vlen(xmult(subt(s1,s2),subt(s1,s3)))-vlen(xmult(subt(p,s1),subt(p,s2)))-  
         vlen(xmult(subt(p,s2),subt(p,s3)))-vlen(xmult(subt(p,s3),subt(p,s1))));  
 }  
   
   
-/*ÅĞµãÊÇ·ñÔÚ¿Õ¼äÈı½ÇĞÎÉÏ,²»°üÀ¨±ß½ç,Èıµã¹²ÏßÎŞÒâÒå  *//////////////////////////////////////////////////////////////
- //¸ø¶¨µãÃæ
+/*åˆ¤ç‚¹æ˜¯å¦åœ¨ç©ºé—´ä¸‰è§’å½¢ä¸Š,ä¸åŒ…æ‹¬è¾¹ç•Œ,ä¸‰ç‚¹å…±çº¿æ— æ„ä¹‰  *//////////////////////////////////////////////////////////////
+ //ç»™å®šç‚¹é¢
 int dot_inplane_ex(point p,plane s){  
     return dot_inplane_in(p,s)&&vlen(xmult(subt(p,s.a),subt(p,s.b)))>eps&&  
         vlen(xmult(subt(p,s.b),subt(p,s.c)))>eps&&vlen(xmult(subt(p,s.c),subt(p,s.a)))>eps;  
 }  
- //¸ø¶¨ËÄµã
+ //ç»™å®šå››ç‚¹
 int dot_inplane_ex(point p,point s1,point s2,point s3){  
     return dot_inplane_in(p,s1,s2,s3)&&vlen(xmult(subt(p,s1),subt(p,s2)))>eps&&  
         vlen(xmult(subt(p,s2),subt(p,s3)))>eps&&vlen(xmult(subt(p,s3),subt(p,s1)))>eps;  
 }  
   
   
-/*ÅĞÁ½µãÔÚÏß¶ÎÍ¬²à,µãÔÚÏß¶ÎÉÏ·µ»Ø0,²»¹²ÃæÎŞÒâÒå  */////////////////////////////////////////////////////////////////
+/*åˆ¤ä¸¤ç‚¹åœ¨çº¿æ®µåŒä¾§,ç‚¹åœ¨çº¿æ®µä¸Šè¿”å›0,ä¸å…±é¢æ— æ„ä¹‰  */////////////////////////////////////////////////////////////////
 int same_side(point p1,point p2,line l){  
     return dmult(xmult(subt(l.a,l.b),subt(p1,l.b)),xmult(subt(l.a,l.b),subt(p2,l.b)))>eps;  
 }  
@@ -120,7 +120,7 @@ int same_side(point p1,point p2,point l1,point l2){
 }  
   
   
-/*ÅĞÁ½µãÔÚÏß¶ÎÒì²à,µãÔÚÏß¶ÎÉÏ·µ»Ø0,²»¹²ÃæÎŞÒâÒå  */
+/*åˆ¤ä¸¤ç‚¹åœ¨çº¿æ®µå¼‚ä¾§,ç‚¹åœ¨çº¿æ®µä¸Šè¿”å›0,ä¸å…±é¢æ— æ„ä¹‰  */
 int opposite_side(point p1,point p2,line l){  
     return dmult(xmult(subt(l.a,l.b),subt(p1,l.b)),xmult(subt(l.a,l.b),subt(p2,l.b)))<-eps;  
 }  
@@ -129,7 +129,7 @@ int opposite_side(point p1,point p2,point l1,point l2){
 }  
   
   
-/*ÅĞÁ½µãÔÚÆ½ÃæÍ¬²à,µãÔÚÆ½ÃæÉÏ·µ»Ø0  */
+/*åˆ¤ä¸¤ç‚¹åœ¨å¹³é¢åŒä¾§,ç‚¹åœ¨å¹³é¢ä¸Šè¿”å›0  */
 int same_side(point p1,point p2,plane s){  
     return dmult(pvec(s),subt(p1,s.a))*dmult(pvec(s),subt(p2,s.a))>eps;  
 }  
@@ -138,7 +138,7 @@ int same_side(point p1,point p2,point s1,point s2,point s3){
 }  
   
   
-/*ÅĞÁ½µãÔÚÆ½ÃæÒì²à,µãÔÚÆ½ÃæÉÏ·µ»Ø0  */
+/*åˆ¤ä¸¤ç‚¹åœ¨å¹³é¢å¼‚ä¾§,ç‚¹åœ¨å¹³é¢ä¸Šè¿”å›0  */
 int opposite_side(point p1,point p2,plane s){  
     return dmult(pvec(s),subt(p1,s.a))*dmult(pvec(s),subt(p2,s.a))<-eps;  
 }  
@@ -147,7 +147,7 @@ int opposite_side(point p1,point p2,point s1,point s2,point s3){
 }  
   
   
-/*ÅĞÁ½Ö±ÏßÆ½ĞĞ  *////////////////////////////////////////////////////////////////////////////////////////////////
+/*åˆ¤ä¸¤ç›´çº¿å¹³è¡Œ  *////////////////////////////////////////////////////////////////////////////////////////////////
 int parallel(line u,line v){  
     return vlen(xmult(subt(u.a,u.b),subt(v.a,v.b)))<eps;  
 }  
@@ -156,7 +156,7 @@ int parallel(point u1,point u2,point v1,point v2){
 }  
   
   
-/*ÅĞÁ½Æ½ÃæÆ½ĞĞ  */
+/*åˆ¤ä¸¤å¹³é¢å¹³è¡Œ  */
 int parallel(plane u,plane v){  
     return vlen(xmult(pvec(u),pvec(v)))<eps;  
 }  
@@ -165,7 +165,7 @@ int parallel(point u1,point u2,point u3,point v1,point v2,point v3){
 }  
   
   
-/*ÅĞÖ±ÏßÓëÆ½ÃæÆ½ĞĞ  */
+/*åˆ¤ç›´çº¿ä¸å¹³é¢å¹³è¡Œ  */
 int parallel(line l,plane s){  
     return zero(dmult(subt(l.a,l.b),pvec(s)));  
 }  
@@ -174,7 +174,7 @@ int parallel(point l1,point l2,point s1,point s2,point s3){
 }  
   
   
-/*ÅĞÁ½Ö±Ïß´¹Ö±  */
+/*åˆ¤ä¸¤ç›´çº¿å‚ç›´  */
 int perpendicular(line u,line v){  
     return zero(dmult(subt(u.a,u.b),subt(v.a,v.b)));  
 }  
@@ -183,7 +183,7 @@ int perpendicular(point u1,point u2,point v1,point v2){
 }  
   
   
-/*ÅĞÁ½Æ½Ãæ´¹Ö±  */
+/*åˆ¤ä¸¤å¹³é¢å‚ç›´  */
 int perpendicular(plane u,plane v){  
     return zero(dmult(pvec(u),pvec(v)));  
 }  
@@ -192,7 +192,7 @@ int perpendicular(point u1,point u2,point u3,point v1,point v2,point v3){
 }  
   
   
-/*ÅĞÖ±ÏßÓëÆ½ÃæÆ½ĞĞ */ 
+/*åˆ¤ç›´çº¿ä¸å¹³é¢å¹³è¡Œ */ 
 int perpendicular(line l,plane s){  
     return vlen(xmult(subt(l.a,l.b),pvec(s)))<eps;  
 }  
@@ -201,8 +201,8 @@ int perpendicular(point l1,point l2,point s1,point s2,point s3){
 }  
   
   
-/*ÅĞÁ½Ïß¶ÎÏà½»,°üÀ¨¶ËµãºÍ²¿·ÖÖØºÏ  *//////////////////////////////////////////////////////////////////////////////////
-//¸ø¶¨Á½Ïß
+/*åˆ¤ä¸¤çº¿æ®µç›¸äº¤,åŒ…æ‹¬ç«¯ç‚¹å’Œéƒ¨åˆ†é‡åˆ  *//////////////////////////////////////////////////////////////////////////////////
+//ç»™å®šä¸¤çº¿
 int intersect_in(line u,line v){  
     if (!dots_onplane(u.a,u.b,v.a,v.b))  
         return 0;  
@@ -210,7 +210,7 @@ int intersect_in(line u,line v){
         return !same_side(u.a,u.b,v)&&!same_side(v.a,v.b,u);  
     return dot_online_in(u.a,v)||dot_online_in(u.b,v)||dot_online_in(v.a,u)||dot_online_in(v.b,u);  
 }  
-//¸ø¶¨ËÄµã
+//ç»™å®šå››ç‚¹
 int intersect_in(point u1,point u2,point v1,point v2){  
     if (!dots_onplane(u1,u2,v1,v2))  
         return 0;  
@@ -220,46 +220,46 @@ int intersect_in(point u1,point u2,point v1,point v2){
 }  
   
   
-/*ÅĞÁ½Ïß¶ÎÏà½»,²»°üÀ¨¶ËµãºÍ²¿·ÖÖØºÏ */ 
-//¸ø¶¨Á½Ïß
+/*åˆ¤ä¸¤çº¿æ®µç›¸äº¤,ä¸åŒ…æ‹¬ç«¯ç‚¹å’Œéƒ¨åˆ†é‡åˆ */ 
+//ç»™å®šä¸¤çº¿
 int intersect_ex(line u,line v){  
     return dots_onplane(u.a,u.b,v.a,v.b)&&opposite_side(u.a,u.b,v)&&opposite_side(v.a,v.b,u);  
 } 
-//¸ø¶¨ËÄµã
+//ç»™å®šå››ç‚¹
 int intersect_ex(point u1,point u2,point v1,point v2){  
     return dots_onplane(u1,u2,v1,v2)&&opposite_side(u1,u2,v1,v2)&&opposite_side(v1,v2,u1,u2);  
 }  
   
   
-/*ÅĞÏß¶ÎÓë¿Õ¼äÈı½ÇĞÎÏà½»,°üÀ¨½»ÓÚ±ß½çºÍ(²¿·Ö)°üº¬  */
-//¸ø¶¨ÏßÃæ
+/*åˆ¤çº¿æ®µä¸ç©ºé—´ä¸‰è§’å½¢ç›¸äº¤,åŒ…æ‹¬äº¤äºè¾¹ç•Œå’Œ(éƒ¨åˆ†)åŒ…å«  */
+//ç»™å®šçº¿é¢
 int intersect_in(line l,plane s){  
     return !same_side(l.a,l.b,s)&&!same_side(s.a,s.b,l.a,l.b,s.c)&&  
         !same_side(s.b,s.c,l.a,l.b,s.a)&&!same_side(s.c,s.a,l.a,l.b,s.b);  
 }  
-//¸ø¶¨Îåµã
+//ç»™å®šäº”ç‚¹
 int intersect_in(point l1,point l2,point s1,point s2,point s3){  
     return !same_side(l1,l2,s1,s2,s3)&&!same_side(s1,s2,l1,l2,s3)&&  
         !same_side(s2,s3,l1,l2,s1)&&!same_side(s3,s1,l1,l2,s2);  
 }  
   
   
-/*ÅĞÏß¶ÎÓë¿Õ¼äÈı½ÇĞÎÏà½»,²»°üÀ¨½»ÓÚ±ß½çºÍ(²¿·Ö)°üº¬  */
-//¸ø¶¨ÏßÃæ
+/*åˆ¤çº¿æ®µä¸ç©ºé—´ä¸‰è§’å½¢ç›¸äº¤,ä¸åŒ…æ‹¬äº¤äºè¾¹ç•Œå’Œ(éƒ¨åˆ†)åŒ…å«  */
+//ç»™å®šçº¿é¢
 int intersect_ex(line l,plane s){  
     return opposite_side(l.a,l.b,s)&&opposite_side(s.a,s.b,l.a,l.b,s.c)&&  
         opposite_side(s.b,s.c,l.a,l.b,s.a)&&opposite_side(s.c,s.a,l.a,l.b,s.b);  
 }  
-//¸ø¶¨Îåµã
+//ç»™å®šäº”ç‚¹
 int intersect_ex(point l1,point l2,point s1,point s2,point s3){  
     return opposite_side(l1,l2,s1,s2,s3)&&opposite_side(s1,s2,l1,l2,s3)&&  
         opposite_side(s2,s3,l1,l2,s1)&&opposite_side(s3,s1,l1,l2,s2);  
 }  
   
   
-/*¼ÆËãÁ½Ö±Ïß½»µã*/////////////////////////////////////////////////////////////////////////////////////
-//ÈôÆ½ĞĞ»á³ö´í
- //¸ø¶¨Á½Ïß
+/*è®¡ç®—ä¸¤ç›´çº¿äº¤ç‚¹*/////////////////////////////////////////////////////////////////////////////////////
+//è‹¥å¹³è¡Œä¼šå‡ºé”™
+ //ç»™å®šä¸¤çº¿
 point intersection(line u,line v){  
     point ret=u.a;  
     double t=((u.a.x-v.a.x)*(v.a.y-v.b.y)-(u.a.y-v.a.y)*(v.a.x-v.b.x))  
@@ -269,7 +269,7 @@ point intersection(line u,line v){
     ret.z+=(u.b.z-u.a.z)*t;  
     return ret;  
 }  
- //¸ø¶¨ËÄµã
+ //ç»™å®šå››ç‚¹
 point intersection(point u1,point u2,point v1,point v2){  
     point ret=u1;  
     double t=((u1.x-v1.x)*(v1.y-v2.y)-(u1.y-v1.y)*(v1.x-v2.x))  
@@ -281,9 +281,9 @@ point intersection(point u1,point u2,point v1,point v2){
 }  
   
   
-/*¼ÆËãÖ±ÏßÓëÆ½Ãæ½»µã*/
-//ÈôÆ½ĞĞ¹²Ïß»á³ö´í
- //¸ø¶¨ÏßÃæ
+/*è®¡ç®—ç›´çº¿ä¸å¹³é¢äº¤ç‚¹*/
+//è‹¥å¹³è¡Œå…±çº¿ä¼šå‡ºé”™
+ //ç»™å®šçº¿é¢
 point intersection(line l,plane s){  
     point ret=pvec(s);  
     double t=(ret.x*(s.a.x-l.a.x)+ret.y*(s.a.y-l.a.y)+ret.z*(s.a.z-l.a.z))/  
@@ -293,7 +293,7 @@ point intersection(line l,plane s){
     ret.z=l.a.z+(l.b.z-l.a.z)*t;  
     return ret;  
 }  
- //¸ø¶¨Îåµã
+ //ç»™å®šäº”ç‚¹
 point intersection(point l1,point l2,point s1,point s2,point s3){  
     point ret=pvec(s1,s2,s3);  
     double t=(ret.x*(s1.x-l1.x)+ret.y*(s1.y-l1.y)+ret.z*(s1.z-l1.z))/  
@@ -305,16 +305,16 @@ point intersection(point l1,point l2,point s1,point s2,point s3){
 }  
   
   
-/*¼ÆËãÁ½Æ½Ãæ½»Ïß*/
-//Æ½ĞĞÖØºÏ»á³ö´í
- //¸ø¶¨Á½Ãæ
+/*è®¡ç®—ä¸¤å¹³é¢äº¤çº¿*/
+//å¹³è¡Œé‡åˆä¼šå‡ºé”™
+ //ç»™å®šä¸¤é¢
 line intersection(plane u,plane v){  
     line ret;  
     ret.a=parallel(v.a,v.b,u.a,u.b,u.c)?intersection(v.b,v.c,u.a,u.b,u.c):intersection(v.a,v.b,u.a,u.b,u.c);  
     ret.b=parallel(v.c,v.a,u.a,u.b,u.c)?intersection(v.b,v.c,u.a,u.b,u.c):intersection(v.c,v.a,u.a,u.b,u.c);  
     return ret;  
 }  
- //¸ø¶¨Áùµã
+ //ç»™å®šå…­ç‚¹
 line intersection(point u1,point u2,point u3,point v1,point v2,point v3){  
     line ret;  
     ret.a=parallel(v1,v2,u1,u2,u3)?intersection(v2,v3,u1,u2,u3):intersection(v1,v2,u1,u2,u3);  
@@ -323,69 +323,69 @@ line intersection(point u1,point u2,point u3,point v1,point v2,point v3){
 }  
   
   
-/*µãµ½Ö±Ïß¾àÀë */////////////////////////////////////////////////////////////////////////////////////////////
-//¸ø¶¨µãÏß
+/*ç‚¹åˆ°ç›´çº¿è·ç¦» */////////////////////////////////////////////////////////////////////////////////////////////
+//ç»™å®šç‚¹çº¿
 double ptoline(point p,line l){  
     return vlen(xmult(subt(p,l.a),subt(l.b,l.a)))/dis(l.a,l.b);  
 }  
-//¸ø¶¨Èıµã
+//ç»™å®šä¸‰ç‚¹
 double ptoline(point p,point l1,point l2){  
     return vlen(xmult(subt(p,l1),subt(l2,l1)))/dis(l1,l2);  
 }  
   
   
-/*µãµ½Æ½Ãæ¾àÀë  */
-//¸ø¶¨µãÃæ
+/*ç‚¹åˆ°å¹³é¢è·ç¦»  */
+//ç»™å®šç‚¹é¢
 double ptoplane(point p,plane s){  
     return fabs(dmult(pvec(s),subt(p,s.a)))/vlen(pvec(s));  
 }  
-//¸ø¶¨ËÄµã
+//ç»™å®šå››ç‚¹
 double ptoplane(point p,point s1,point s2,point s3){  
     return fabs(dmult(pvec(s1,s2,s3),subt(p,s1)))/vlen(pvec(s1,s2,s3));  
 }  
   
   
-/*Ö±Ïßµ½Ö±Ïß¾àÀë  */
-//¸ø¶¨Á½Ïß
+/*ç›´çº¿åˆ°ç›´çº¿è·ç¦»  */
+//ç»™å®šä¸¤çº¿
 double linetoline(line u,line v){  
     point n=xmult(subt(u.a,u.b),subt(v.a,v.b));  
     return fabs(dmult(subt(u.a,v.a),n))/vlen(n);  
 }  
-//¸ø¶¨ËÄµã
+//ç»™å®šå››ç‚¹
 double linetoline(point u1,point u2,point v1,point v2){  
     point n=xmult(subt(u1,u2),subt(v1,v2));  
     return fabs(dmult(subt(u1,v1),n))/vlen(n);  
 }  
   
   
-/*Á½Ö±Ïß¼Ğ½ÇcosÖµ *//////////////////////////////////////////////////////////////////////////////////////// 
-//¸ø¶¨Á½Ïß
+/*ä¸¤ç›´çº¿å¤¹è§’coså€¼ *//////////////////////////////////////////////////////////////////////////////////////// 
+//ç»™å®šä¸¤çº¿
 double angle_cos(line u,line v){  
     return dmult(subt(u.a,u.b),subt(v.a,v.b))/vlen(subt(u.a,u.b))/vlen(subt(v.a,v.b));  
 }  
-//¸ø¶¨ËÄµã
+//ç»™å®šå››ç‚¹
 double angle_cos(point u1,point u2,point v1,point v2){  
     return dmult(subt(u1,u2),subt(v1,v2))/vlen(subt(u1,u2))/vlen(subt(v1,v2));  
 }  
   
   
-/*Á½Æ½Ãæ¼Ğ½ÇcosÖµ  */
-//¸ø¶¨Á½Ãæ
+/*ä¸¤å¹³é¢å¤¹è§’coså€¼  */
+//ç»™å®šä¸¤é¢
 double angle_cos(plane u,plane v){  
     return dmult(pvec(u),pvec(v))/vlen(pvec(u))/vlen(pvec(v));  
 }  
-//¸ø¶¨Áùµã
+//ç»™å®šå…­ç‚¹
 double angle_cos(point u1,point u2,point u3,point v1,point v2,point v3){  
     return dmult(pvec(u1,u2,u3),pvec(v1,v2,v3))/vlen(pvec(u1,u2,u3))/vlen(pvec(v1,v2,v3));  
 }  
   
   
-/*Ö±ÏßÆ½Ãæ¼Ğ½ÇsinÖµ */ 
-//¸ø¶¨µãÃæ
+/*ç›´çº¿å¹³é¢å¤¹è§’sinå€¼ */ 
+//ç»™å®šç‚¹é¢
 double angle_sin(line l,plane s){  
     return dmult(subt(l.a,l.b),pvec(s))/vlen(subt(l.a,l.b))/vlen(pvec(s));  
 }  
-//¸ø¶¨Áùµã
+//ç»™å®šå…­ç‚¹
 double angle_sin(point l1,point l2,point s1,point s2,point s3){  
     return dmult(subt(l1,l2),pvec(s1,s2,s3))/vlen(subt(l1,l2))/vlen(pvec(s1,s2,s3));  
 } 
