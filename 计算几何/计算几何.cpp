@@ -12,32 +12,32 @@ struct point{
 	double x,y;
 	  point(){}
     point(double _x,double _y):x(_x),y(_y){}
-    point operator +(point p)//ÏòÁ¿¼Ó·¨
+    point operator +(point p)//å‘é‡åŠ æ³•
     {
         return point(x+p.x,y+p.y);
     }
-    point operator -(point p)//ÏòÁ¿¼õ·¨
+    point operator -(point p)//å‘é‡å‡æ³•
     {
         return point(x-p.x,y-p.y);
     }
-    double operator *(point p)//ÏòÁ¿²æ³Ë
+    double operator *(point p)//å‘é‡å‰ä¹˜
     {
         return x*p.y-y*p.x;
     }
-    double operator ^(point p)//ÏòÁ¿µã³Ë
+    double operator ^(point p)//å‘é‡ç‚¹ä¹˜
     {
         return x*p.x+y*p.y;
     }
-    point operator /(double p)//ÏòÁ¿³ı·¨
+    point operator /(double p)//å‘é‡é™¤æ³•
     {
         return point(x/p,y/p);
     }
-    point operator *(double p)//ÏòÁ¿³Ë·¨
+    point operator *(double p)//å‘é‡ä¹˜æ³•
     {
         return point(x*p,y*p);
 	}
 }p[maxn]={};
-/*»ù´¡º¯Êı*/
+/*åŸºç¡€å‡½æ•°*/
 double max(double x,double y)
 {
     return x>y?x:y;
@@ -46,35 +46,35 @@ double min(double x,double y)
 {
     return x<y?x:y;
 }
-double cross(point a,point b,point c)//²æ»ı
+double cross(point a,point b,point c)//å‰ç§¯
 {
     return (b-a)*(c-a);
 }
-double dot(point a,point b,point c)//µã»ı
+double dot(point a,point b,point c)//ç‚¹ç§¯
 {
     return (b-a)^(c-a);
 }
-double len(point a)//ÏòÁ¿³¤¶È
+double len(point a)//å‘é‡é•¿åº¦
 {
     return sqrt(a^a);
 }
-double dis(point a,point b)//Á½µã¾àÀë
+double dis(point a,point b)//ä¸¤ç‚¹è·ç¦»
 {
     return len(b-a);
 
-}/*ÊäÈëµã*/
+}/*è¾“å…¥ç‚¹*/
 void input(int n)
 {
 	for(int i=0;i<n;i++)
 		cin>>p[i].x>>p[i].y;
 }
 
-/*ÅĞ¶ÏµãÊÇ·ñÔÚÏß¶ÎÉÏ*/
+/*åˆ¤æ–­ç‚¹æ˜¯å¦åœ¨çº¿æ®µä¸Š*/
 bool same_line(point q,point x1,point x2)
 {
 	const double esp=1e-8;
 	if(abs((x2.y-q.y)*(x1.x-q.x)-(x1.y-q.y)*(x2.x-q.x))<esp){
-		/*Èç¹ûÅĞ¶ÏÊÇ·ñÔÚÖ±ÏßÉÏ£¬ÔòÕâÀïÖ±½Óreturn true*/
+		/*å¦‚æœåˆ¤æ–­æ˜¯å¦åœ¨ç›´çº¿ä¸Šï¼Œåˆ™è¿™é‡Œç›´æ¥return true*/
 		if(q.x<=x1.x&&q.x>=x2.x&&q.y<=x1.y&&q.y>=x2.y)
 			return true;
 		if(q.x>=x1.x&&q.x<=x2.x&&q.y>=x1.y&&q.y<=x2.y)
@@ -84,8 +84,8 @@ bool same_line(point q,point x1,point x2)
 	return false;
 }
 
-/*ÅĞ¶ÏµãÊÇ·ñÔÚ¶à±ßĞÎareaÄÚ²¿£¬areaÄÚµÄµãÄæÊ±ÕëÅÅĞò*/
-bool in_the_area(point q,point area[],int n/*¶à±ßĞÎµãµÄÊıÁ¿*/)
+/*åˆ¤æ–­ç‚¹æ˜¯å¦åœ¨å¤šè¾¹å½¢areaå†…éƒ¨ï¼Œareaå†…çš„ç‚¹é€†æ—¶é’ˆæ’åº*/
+bool in_the_area(point q,point area[],int n/*å¤šè¾¹å½¢ç‚¹çš„æ•°é‡*/)
 {
 	int ans=0;
 	double x;
@@ -101,7 +101,7 @@ bool in_the_area(point q,point area[],int n/*¶à±ßĞÎµãµÄÊıÁ¿*/)
 	return(ans%2==1);
 }
 
-/*²æ³Ë*/
+/*å‰ä¹˜*/
 long long crossmulti(point p1,point p2,point p0)
 {
 	long long x1 = p1.x - p0.x;
@@ -113,13 +113,13 @@ long long crossmulti(point p1,point p2,point p0)
     return (x1 * y2 - x2 * y1);
 }
 
-/*ÇóÏòÁ¿Íâ»ı*/
+/*æ±‚å‘é‡å¤–ç§¯*/
 double cross(point x1,point x2)
 {
 	return x1.x*x2.y-x1.y*x2.x;
 }
 
-/*ÇóÍ¹¶à±ßĞÎÃæ»ı*/
+/*æ±‚å‡¸å¤šè¾¹å½¢é¢ç§¯*/
 double area(point s[],int n)
 {
 	double ret=0;
@@ -128,13 +128,13 @@ double area(point s[],int n)
 		ret+=cross(s[i],s[i+1]);
 	return fabs(ret/2);
 }
-/*ÇóÁ½µã¾àÀë*/
+/*æ±‚ä¸¤ç‚¹è·ç¦»*/
 double getd(point x1,point x2)
 {
 	return sqrt((x1.x-x2.x)*(x1.x-x2.x)+(x1.y-x2.y)*(x1.y-x2.y));
 }
 
-/*ÈıµãÇóÔ²ĞÄ*/
+/*ä¸‰ç‚¹æ±‚åœ†å¿ƒ*/
 point geto(point p1,point p2,point p3)
 {
 	point res;
@@ -149,7 +149,7 @@ point geto(point p1,point p2,point p3)
 	return res;
 }
 
-/*×îĞ¡Ô²¸²¸Ç*/
+/*æœ€å°åœ†è¦†ç›–*/
 void mincir(point &o,double &r, point p[],int n)
 {
 	o=p[1];
@@ -174,9 +174,9 @@ void mincir(point &o,double &r, point p[],int n)
 	}
 }
 
-/*Í¹°üÎÊÌâ*/
+/*å‡¸åŒ…é—®é¢˜*/
 
-//¼«½ÇÅÅĞò,¼«½ÇÏàÍ¬Ôò°´³¤¶ÈÅÅĞò
+//æè§’æ’åº,æè§’ç›¸åŒåˆ™æŒ‰é•¿åº¦æ’åº
 int cmp(point a,point b)
 {
 	double temp=cross(p[0],a,b);
@@ -206,7 +206,7 @@ void sortpoint(int n)
 	p[0]=start;
 	sort(p+1,p+n,cmp);
 }
-void be_weight(int val)//È¥ÖØ
+void be_weight(int val)//å»é‡
 {
 	int temp=val;
 	int n=1;
@@ -242,7 +242,7 @@ int convexhull(point p[],point ch[],int n)
 			cnt=2;
 			for(i=2;i<n;i++)
 			{
-				while(cross(ch[cnt-1],ch[cnt],p[i])<0)//µ¯³ö²»ºÏ·¨µã
+				while(cross(ch[cnt-1],ch[cnt],p[i])<0)//å¼¹å‡ºä¸åˆæ³•ç‚¹
 					cnt--;
 				ch[++cnt]=p[i];
 			}
@@ -250,7 +250,7 @@ int convexhull(point p[],point ch[],int n)
 		return cnt;
 }
 
-/*ÇóÍ¹°üÖÜ³¤*/
+/*æ±‚å‡¸åŒ…å‘¨é•¿*/
 double perimeter(int cnt,point ch[])
 {
 	double sum=0;
@@ -259,7 +259,7 @@ double perimeter(int cnt,point ch[])
 	return sum;
 }
 
-/*ÇóÍ¹°üÃæ»ı*/
+/*æ±‚å‡¸åŒ…é¢ç§¯*/
 double area(int cnt,point ch[])
 {
 	double sum=0;
@@ -269,7 +269,7 @@ double area(int cnt,point ch[])
 	return fabs(sum/2.0);
 }
 
-/*Çó¶à±ßĞÎÖØĞÄ*/
+/*æ±‚å¤šè¾¹å½¢é‡å¿ƒ*/
 point bartcenter(int n,point p[])
 {
 	double sum=0;
@@ -284,8 +284,8 @@ point bartcenter(int n,point p[])
 		return ret;
 }
 
-/*Ğı×ª¿¨¿Ç*/
-/*ÇóÍ¹°üÖ±¾¶-×î´óµã¶Ô¾àÀë*/
+/*æ—‹è½¬å¡å£³*/
+/*æ±‚å‡¸åŒ…ç›´å¾„-æœ€å¤§ç‚¹å¯¹è·ç¦»*/
 double diameter(int cnt,point p[])
 {
 	double maxn=0;
@@ -300,7 +300,7 @@ double diameter(int cnt,point p[])
 	return maxn;
 }
 
-/*ÇóÃæ»ı×î´óÈı½ÇĞÎ*/
+/*æ±‚é¢ç§¯æœ€å¤§ä¸‰è§’å½¢*/
 double maxtriangle(int cnt,point p[])
 {
     double maxn=0;
@@ -318,7 +318,7 @@ double maxtriangle(int cnt,point p[])
     return maxn/2.0;
 }
 
-/*ÇóÃæ»ı×îĞ¡»·ÈÆ¾ØĞÎ*/
+/*æ±‚é¢ç§¯æœ€å°ç¯ç»•çŸ©å½¢*/
 
 double minrectangleS(int cnt,point q[])
 {
@@ -352,7 +352,7 @@ double minrectangleS(int cnt,point q[])
     return S;
 }
 
-/*ÇóÖÜ³¤×îĞ¡»·ÈÆ¾ØĞÎ*/
+/*æ±‚å‘¨é•¿æœ€å°ç¯ç»•çŸ©å½¢*/
 double minrectangleC(int cnt,point q[])
 {
 	double C=INF;
@@ -383,4 +383,20 @@ double minrectangleC(int cnt,point q[])
         C=min(C,(w+h)*2);
     }
    return C;
+}
+/*å¤šè¾¹å½¢ä¸Šçš„ç½‘æ ¼ç‚¹ä¸ªæ•°  */
+int grid_onedge(int n,point* p){  
+    int i,ret=0;  
+    for (i=0;i<n;i++)  
+        ret+=gcd(abs(p[i].x-p[(i+1)%n].x),abs(p[i].y-p[(i+1)%n].y));  
+    return ret;  
+}  
+  
+  
+/*å¤šè¾¹å½¢å†…çš„ç½‘æ ¼ç‚¹ä¸ªæ•°  */
+int grid_inside(int n,point* p){  
+    int i,ret=0;  
+    for (i=0;i<n;i++)  
+        ret+=p[(i+1)%n].y*(p[i].x-p[(i+2)%n].x);  
+    return (abs(ret)-grid_onedge(n,p))/2+1;  
 }
