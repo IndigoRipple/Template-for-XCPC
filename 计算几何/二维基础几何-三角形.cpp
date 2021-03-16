@@ -8,11 +8,11 @@ struct point{
 };  
 struct line{point a,b;
 };  
-  /*Çó¾àÀë*/
+  /*æ±‚è·ç¦»*/
 double dis(point p1,point p2){  
     return sqrt((p1.x-p2.x)*(p1.x-p2.x)+(p1.y-p2.y)*(p1.y-p2.y));  
 }    
- /*ÇóÁ½Ïß½»µã*/
+ /*æ±‚ä¸¤çº¿äº¤ç‚¹*/
 point in(line u,line v){  
     point ret=u.a;  
     double t=((u.a.x-v.a.x)*(v.a.y-v.b.y)-(u.a.y-v.a.y)*(v.a.x-v.b.x))  
@@ -21,7 +21,7 @@ point in(line u,line v){
     ret.y+=(u.b.y-u.a.y)*t;  
     return ret;  
 }   
-/*ÍâĞÄ*/  
+/*å¤–å¿ƒ*/  
 point circumcenter(point a,point b,point c){  
     line u,v;  
     u.a.x=(a.x+b.x)/2;  
@@ -34,7 +34,7 @@ point circumcenter(point a,point b,point c){
     v.b.y=v.a.y+a.x-c.x;  
     return in(u,v);  
 }   
-/*ÄÚĞÄ*/
+/*å†…å¿ƒ*/
 point incenter(point a,point b,point c){  
     line u,v;  
     double m,n;  
@@ -50,7 +50,7 @@ point incenter(point a,point b,point c){
     v.b.y=v.a.y+sin((m+n)/2);  
     return in(u,v);  
 }   
-/*´¹ĞÄ*/
+/*å‚å¿ƒ*/
 point perpencenter(point a,point b,point c){  
     line u,v;  
     u.a=c;  
@@ -61,7 +61,7 @@ point perpencenter(point a,point b,point c){
     v.b.y=v.a.y+a.x-c.x;  
     return in(u,v);  
 }  
-/*ÖØĞÄ*/
+/*é‡å¿ƒ*/
 point barycenter(point a,point b,point c){  
     line u,v;  
     u.a.x=(a.x+b.x)/2;  
@@ -72,8 +72,8 @@ point barycenter(point a,point b,point c){
     v.b=b;  
     return in(u,v);  
 }    
-/*·ÑÂíµã*/
-//µ½Èı½ÇĞÎÈı¶¥µã¾àÀëÖ®ºÍ×îĞ¡µÄµã  
+/*è´¹é©¬ç‚¹*/
+//åˆ°ä¸‰è§’å½¢ä¸‰é¡¶ç‚¹è·ç¦»ä¹‹å’Œæœ€å°çš„ç‚¹  
 point fermentpoint(point a,point b,point c){  
     point u,v;  
     double step=fabs(a.x)+fabs(a.y)+fabs(b.x)+fabs(b.y)+fabs(c.x)+fabs(c.y);  
