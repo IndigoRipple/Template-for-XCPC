@@ -1,6 +1,6 @@
 const int N = 4e5+7;
 int n,m;
-long long a[N],sum[N],mx[N],tag[N];
+long long a[N*4],sum[N*4],mx[N*4],tag[N*4];
 //sum[x]表示x节点代表的区间和， mx[x]代表最大值，tag[x]是x节点的懒标记，代表区间加合 
 //上传标记 
 void pushup(int x){

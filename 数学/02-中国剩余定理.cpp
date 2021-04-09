@@ -5,6 +5,6 @@ long long crt(const int*& a, const int*& m, const int& n) {
         t[i] = M / m[i];
         t_[i] = inv(t[i], m[i]);
     }
-    for (int i = n - 1; i >= 0; --i) ans = (ans + a[i] * t[i] % M * t_[i] % M) % M;
+    for (int i = n - 1; i >= 0; --i) ans = (ans + t[i] % M * a[i] % M * t_[i] % M) % M;
     return ans;
 }
