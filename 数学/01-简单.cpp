@@ -3,7 +3,7 @@ int gcd(int a, int b) {
     return a;
 }
 
-int power(int x, int n, const int& mod = mod) {
+int power(int x, int n) {
     int ret = 1;
     while (n) {
         if (n & 1) ret = 1LL * ret * x % mod;
@@ -52,13 +52,14 @@ int exgcd(int a, int b, int& x, int& y) {
 }
 
 // p 要是质数
-inline int inv(const int& x, const int& mod = mod) {
+inline int inv(const int& x) {
     return power(x, mod - 2, mod);
 }
 
 int C(const int& n, int m) {
-    int ret = 1;
     m = min(m, n - m);
+    if (m < 0) return 0;
+    int ret = 1;
     for (int i = 0; i < m; ++i) ret = 1LL * ret * (n - i) % mod * inv(i + 1) % mod;
     return ret;
 }
@@ -81,7 +82,8 @@ void sieve(const int& n) {
     }
 }
 
-long long multi(const long long& x, const long long& y, const long long& mod = mod) {
+// 模意义下的快速乘
+long long multi(const long long& x, const long long& y) {
     long long temp = (long double)x / mod * y;
     long long res = (unsigned long long)x * y - (unsigned long long)temp * mod;
     return (res + mod) % mod;
