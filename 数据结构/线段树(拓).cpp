@@ -15,18 +15,18 @@ void pushup(int x) { //上传标记
     sum[x] = sum[x<<1] + sum[x<<1|1];
     max_[x] = max(max_[x<<1],max_[x<<1|1]);
 }
-void build(int x,int l,int r) {//建树
+void build(int l,int r,int x=1) {//建树
     if(l == r){
         sum[x] = a[l];
         max_[x] = max(max_[x<<1],max_[x<<1|1]);
         return;
     }
     int mid = (l+r)>>1;
-    build(x<<1,l,mid);
-    build(x<<1|1,mid+1,r);
+    build(l,mid,x<<1);
+    build(mid+1,r,x<<1|1);
     pushup(x);
 }
-void pushdown(int x,int l,int r) {//下放标记
+void pushdown(int l,int r,int x) {//下放标记
     int ls = x<<1,rs = x<<1|1,mid = (l+r)>>1;
     if(tag[x].col != -1){//有赋值标记
         int c = tag[x].col;
@@ -62,7 +62,7 @@ void pushdown(int x,int l,int r) {//下放标记
     }
     return;
 }
-void updata_col(int x,int l,int r,int ll,int rr,int k) { //将[ll,rr]赋值为k
+void updata_col(int l,int r,int ll,int rr,int k,int x=1) { //将[ll,rr]赋值为k
     if(r < ll || l > rr) return;
     if(l >= ll && r <= rr){
         sum[x] = k * (r - l + 1);
@@ -72,14 +72,14 @@ void updata_col(int x,int l,int r,int ll,int rr,int k) { //将[ll,rr]赋值为k
         tag[x].col = k;
         return;
     }
-    pushdown(x,l,r);
-    int mid=(l+r)>>1;
-    updata_col(x<<1,l,mid,ll,rr,k);
-    updata_col(x<<1|1,mid+1,r,ll,rr,k);
+    pushdown(l,r,x);
+    int mid=l+r>>1;
+    updata_col(l,mid,ll,rr,k,x<<1);
+    updata_col(mid+1,r,ll,rr,k,x<<1|1);
     pushup(x);
 }
 
-void updata_mul(int x,int l,int r,int ll,int rr,int k) { //将[ll,rr]乘以k
+void updata_mul(int l,int r,int ll,int rr,int k,int x=1) { //将[ll,rr]乘以k
     if(r < ll || l > rr) return;
     if(l >= ll && r <= rr){
         sum[x] = sum[x] * k;
@@ -88,13 +88,13 @@ void updata_mul(int x,int l,int r,int ll,int rr,int k) { //将[ll,rr]乘以k
         tag[x].add = tag[x].add * k;
         return;
     }
-    pushdown(x,l,r);
+    pushdown(l,r,x);
     int mid=(l+r)>>1;
-    updata_mul(x<<1,l,mid,ll,rr,k);
-    updata_mul(x<<1|1,mid+1,r,ll,rr,k);
+    updata_mul(l,mid,ll,rr,k,x<<1);
+    updata_mul(mid+1,r,ll,rr,k,x<<1|1);
     pushup(x);
 }
-void updata_add(int x,int l,int r,int ll,int rr,int k) { //将[ll,rr]加上k
+void updata_add(int l,int r,int ll,int rr,int k,int x=1) { //将[ll,rr]加上k
     if(r < ll || l > rr) return;
     if(l >= ll && r <= rr){
         sum[x] = sum[x] + k * (r - l + 1);
@@ -102,30 +102,30 @@ void updata_add(int x,int l,int r,int ll,int rr,int k) { //将[ll,rr]加上k
         tag[x].add = tag[x].add + k;
         return;
     }
-    pushdown(x,l,r);
+    pushdown(l,r,x);
     int mid = (l+r)>>1;
-    updata_add(x<<1,l,mid,ll,rr,k);
-    updata_add(x<<1|1,mid+1,r,ll,rr,k);
+    updata_add(l,mid,ll,rr,k,x<<1);
+    updata_add(mid+1,r,ll,rr,k,x<<1|1);
     pushup(x);
 }
-int query(int x,int l,int r,int ll,int rr) {//查询区间和
+int query(int l,int r,int ll,int rr,int x=1) {//查询区间和
     if(r < ll || l > rr) return 0;
     if(l >= ll && r <= rr){
         return sum[x];
     }
-    pushdown(x,l,r);
-    int mid=(l+r)>>1;
-    return query(x<<1,l,mid,ll,rr)+query(x<<1|1,mid+1,r,ll,rr);
+    pushdown(l,r,x);
+    int mid=l+r>>1;
+    return query(l,mid,ll,rr,x<<1)+query(mid+1,r,ll,rr,x<<1|1);
 }
 
-int query_mx(int x,int l,int r,int ll,int rr) {//查询区间最值
+int query_mx(int l,int r,int ll,int rr,int x=1) {//查询区间最值
     if(r < ll || l > rr) return -inf;
     if(l >= ll && r <= rr){
         return max_[x];
     }
-    pushdown(x,l,r);
-    int mid=(l+r)>>1;
-    return max(query_mx(x<<1,l,mid,ll,rr),query_mx(x<<1|1,mid+1,r,ll,rr));
+    pushdown(l,r,x);
+    int mid=l+r>>1;
+    return max(query_mx(l,mid,ll,rr,x<<1),query_mx(mid+1,r,ll,rr,x<<1|1));
 }
 
 void init() { //初始化
@@ -135,5 +135,5 @@ void init() { //初始化
     for(int i = 1;i <= n;i++){
         cin>>a[i];
     }
-    build(1,1,n);
+    build(1,n);
 }
