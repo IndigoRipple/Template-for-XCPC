@@ -1,25 +1,21 @@
-int fa[], cnt[]; // cnt 数组用于统计各个连通块里面的数据
+int fa[];
+int cnt[]; // 各连通块大小
 
-void rar(const int& n) { for (int i = n; i > 0; --i) fa[i] = fa[fa[i]]; }
+int find(const int& x) {
+    return x == fa[x] ? x : fa[x] = find(fa[x]);
+}
 
 int main() {
     int n, m;
     cin >> n >> m; // n 为点数，m 为边数
-    for (int i = n; i > 0; --i) fa[i] = i;
+    iota(fa, fa + (n + 1), 0);
+    fill(cnt, cnt + (n + 1), 1);
     while (m--) {
         int u, v;
         cin >> u >> v;
-        while (u != fa[u]) u = fa[u];
-        while (v != fa[v]) v = fa[v];
-        if (u > v) swap(u, v);
-        fa[v] = u;
-        // magic_num 随便取，略大于根号 m，是 2 的幂的话 if 括号里面可以换成位运算
-        if (!(m % magic_num)) rar(n);
+        fa[u] = find(u); fa[v] = find(v);
+        if (cnt[fa[u]] < cnt[fa[v]]) swap(u, v);
+        cnt[fa[u]] += cnt[fa[v]];
+        fa[fa[v]] = fa[u];
     }
-    int blockcnt = 0; // 连通块数量
-    for (int i = 1; i <= n; ++i)
-        if (fa[i] == i) {
-            ++blockcnt;
-            // cnt[i] 是这个连通块的数据
-        } else cnt[fa[i]] += cnt[i]; // 把连通块里面各个点的数据传给根节点
 }
