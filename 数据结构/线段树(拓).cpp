@@ -1,139 +1,133 @@
-//维护区间加法 乘法 赋值 最值
-#include<bits/stdc++.h>
-#define int long long
-using namespace std;
-
-const int inf = 1e16;
-const int N = 1e5 + 7;
-int n,m;
-int a[N*4],sum[N*4],max_[N*4];
-struct LazyTag{
-    int add,mul,col;//三种懒标记
-}tag[N*4];
-
-void pushup(int x) { //上传标记
-    sum[x] = sum[x<<1] + sum[x<<1|1];
-    max_[x] = max(max_[x<<1],max_[x<<1|1]);
-}
-void build(int l,int r,int x=1) {//建树
-    if(l == r){
-        sum[x] = a[l];
-        max_[x] = max(max_[x<<1],max_[x<<1|1]);
+/**
+ * 维护区间加法、乘法、赋值、最值
+ * 操作和注意事项与“简”类似
+ */
+template<typename T>
+struct segment_tree {
+    const int N = 4e5 + 10;
+    const T inf = numeric_limits<T>::max() / 2;
+    int L, R;
+    T a[N * 4], sum[N * 4], mx[N * 4];
+    struct LazyTag {
+        T add, mul; // 三种懒标记
+        optional<T> col;
+    } tag[N * 4];
+    void pushup(int x) { //上传标记
+        sum[x] = sum[x * 2] + sum[x * 2 + 1];
+        mx[x] = max(mx[x * 2], mx[x * 2 + 1]);
+    }
+    void build(int l, int r, int x = 1) { // 建树
+        if (x == 1) {
+            L = l; R = r;
+            for (int i = r * 4; i > 0; i--) mul[i] = 1;
+        }
+        if (l == r) {
+            sum[x] = a[l];
+            mx[x] = max(mx[x * 2], mx[x * 2 + 1]);
+            return;
+        }
+        int mid = (l + r) / 2;
+        build(l, mid, x * 2);
+        build(mid + 1, r, x * 2 + 1);
+        pushup(x);
+    }
+    void pushdown(int l, int r, int x) { // 下放标记
+        int ls = x * 2, rs = x * 2 + 1, mid = (l + r) / 2;
+        if (tag[x].col) { // 有赋值标记
+            T c = tag[x].col.value;
+            tag[ls].add = tag[rs].add = 0;
+            tag[ls].mul = tag[rs].mul = 1;
+            sum[ls] = c * (mid - l + 1);
+            sum[rs] = c * (r - mid);
+            tag[ls].col = tag[rs].col = c;
+            mx[ls] = mx[rs] = c;
+            tag[x].col.reset();
+        }
+        if (tag[x].mul != 1) { // 有乘法标记
+            T c = tag[x].mul;
+            tag[ls].mul *= c;
+            tag[rs].mul *= c;
+            sum[ls] *= c;
+            sum[rs] *= c;
+            mx[ls] *= c;
+            mx[rs] *= c;
+            tag[ls].add *= c;
+            tag[rs].add *= c;
+            tag[x].mul = 1;
+        }
+        if (tag[x].add != 0) { // 有加法标记
+            T c = tag[x].add;
+            tag[ls].add += c;
+            tag[rs].add += c;
+            sum[ls] += c * (mid - l + 1);
+            sum[rs] += c * (r - mid);
+            mx[ls] += c;
+            mx[rs] += c;
+            tag[x].add = 0;
+        }
         return;
     }
-    int mid = (l+r)>>1;
-    build(l,mid,x<<1);
-    build(mid+1,r,x<<1|1);
-    pushup(x);
-}
-void pushdown(int l,int r,int x) {//下放标记
-    int ls = x<<1,rs = x<<1|1,mid = (l+r)>>1;
-    if(tag[x].col != -1){//有赋值标记
-        int c = tag[x].col;
-        tag[ls].add = tag[rs].add = 0;
-        tag[ls].mul = tag[rs].mul = 1;
-        sum[ls] = c * (mid - l + 1);
-        sum[rs] = c * (r - mid );
-        tag[ls].col = tag[rs].col = c;
-        max_[ls] = max_[rs] = c;
-        tag[x].col = -1;
+    void updata_col(int ll, int rr, T k, int l = L, int r = R, int x = 1) { // 将 [ll, rr] 赋值为 k
+        if (r < ll || l > rr) return;
+        if (l >= ll && r <= rr) {
+            sum[x] = k * (r - l + 1);
+            mx[x] = k;
+            tag[x].mul = 1;
+            tag[x].add = 0;
+            tag[x].col = k;
+            return;
+        }
+        pushdown(l, r, x);
+        int mid = (l + r) / 2;
+        updata_col(ll, rr, k, l, mid, x * 2);
+        updata_col(ll, rr, k, mid + 1, r, x * 2 + 1);
+        pushup(x);
     }
-    if(tag[x].mul != 1){ //有乘法标记
-        int c = tag[x].mul;
-        tag[ls].mul *= c;
-        tag[rs].mul *= c;
-        sum[ls] *= c;
-        sum[rs] *= c;
-        max_[ls] *= c;
-        max_[rs] *= c;
-        tag[ls].add *= c;
-        tag[rs].add *= c;
-        tag[x].mul = 1;
+    void updata_mul(int ll, int rr, T k, int l = L, int r = R, int x = 1) { // 将 [ll, rr] 乘以 k
+        if (r < ll || l > rr) return;
+        if (l >= ll && r <= rr) {
+            sum[x] = sum[x] * k;
+            mx[x] = mx[x] * k;
+            tag[x].mul = tag[x].mul * k;
+            tag[x].add = tag[x].add * k;
+            return;
+        }
+        pushdown(l, r, x);
+        int mid = (l + r) / 2;
+        updata_mul(ll, rr, k, l, mid, x * 2);
+        updata_mul(ll, rr, k, mid + 1, r, x * 2 + 1);
+        pushup(x);
     }
-    if(tag[x].add > 0){ //有加法标记
-        int c = tag[x].add;
-        tag[ls].add += c;
-        tag[rs].add += c;
-        sum[ls] += c * (mid - l + 1);
-        sum[rs] += c * (r - mid);
-        max_[ls] += c;
-        max_[rs] += c;
-        tag[x].add = 0;
+    void updata_add(int ll, int rr, T k, int l = L, int r = R, int x = 1) { // 将 [ll, rr] 加上 k
+        if (r < ll || l > rr) return;
+        if (l >= ll && r <= rr) {
+            sum[x] = sum[x] + k * (r - l + 1);
+            mx[x] = mx[x] + k;
+            tag[x].add = tag[x].add + k;
+            return;
+        }
+        pushdown(l, r, x);
+        int mid = (l + r) / 2;
+        updata_add(ll, rr, k, l, mid, x * 2);
+        updata_add(ll, rr, k, mid + 1, r, x * 2 + 1);
+        pushup(x);
     }
-    return;
-}
-void updata_col(int l,int r,int ll,int rr,int k,int x=1) { //将[ll,rr]赋值为k
-    if(r < ll || l > rr) return;
-    if(l >= ll && r <= rr){
-        sum[x] = k * (r - l + 1);
-        max_[x] = k;
-        tag[x].mul = 1;
-        tag[x].add = 0;
-        tag[x].col = k;
-        return;
+    T query(int ll, int rr, int l = L, int r = R, int x = 1) { // 查询 [ll, rr] 区间和
+        if (r < ll || l > rr) return 0;
+        if (l >= ll && r <= rr) {
+            return sum[x];
+        }
+        pushdown(l, r, x);
+        int mid = (l + r) / 2;
+        return query(ll, rr, l, mid, x * 2) + query(ll, rr, mid + 1, r, x * 2 + 1);
     }
-    pushdown(l,r,x);
-    int mid=l+r>>1;
-    updata_col(l,mid,ll,rr,k,x<<1);
-    updata_col(mid+1,r,ll,rr,k,x<<1|1);
-    pushup(x);
-}
-
-void updata_mul(int l,int r,int ll,int rr,int k,int x=1) { //将[ll,rr]乘以k
-    if(r < ll || l > rr) return;
-    if(l >= ll && r <= rr){
-        sum[x] = sum[x] * k;
-        max_[x] = max_[x] * k;
-        tag[x].mul = tag[x].mul * k;
-        tag[x].add = tag[x].add * k;
-        return;
+    T query_mx(int ll, int rr, int l = L, int r = R, int x = 1) { // 查询 [ll, rr] 最值
+        if (r < ll || l > rr) return -inf;
+        if (l >= ll && r <= rr) {
+            return mx[x];
+        }
+        pushdown(l, r, x);
+        int mid = (l + r) / 2;
+        return max(query_mx(ll, rr, l, mid, x / 2), query_mx(ll, rr, mid + 1, r, x * 2 + 1));
     }
-    pushdown(l,r,x);
-    int mid=(l+r)>>1;
-    updata_mul(l,mid,ll,rr,k,x<<1);
-    updata_mul(mid+1,r,ll,rr,k,x<<1|1);
-    pushup(x);
-}
-void updata_add(int l,int r,int ll,int rr,int k,int x=1) { //将[ll,rr]加上k
-    if(r < ll || l > rr) return;
-    if(l >= ll && r <= rr){
-        sum[x] = sum[x] + k * (r - l + 1);
-        max_[x] = max_[x] + k;
-        tag[x].add = tag[x].add + k;
-        return;
-    }
-    pushdown(l,r,x);
-    int mid = (l+r)>>1;
-    updata_add(l,mid,ll,rr,k,x<<1);
-    updata_add(mid+1,r,ll,rr,k,x<<1|1);
-    pushup(x);
-}
-int query(int l,int r,int ll,int rr,int x=1) {//查询区间和
-    if(r < ll || l > rr) return 0;
-    if(l >= ll && r <= rr){
-        return sum[x];
-    }
-    pushdown(l,r,x);
-    int mid=l+r>>1;
-    return query(l,mid,ll,rr,x<<1)+query(mid+1,r,ll,rr,x<<1|1);
-}
-
-int query_mx(int l,int r,int ll,int rr,int x=1) {//查询区间最值
-    if(r < ll || l > rr) return -inf;
-    if(l >= ll && r <= rr){
-        return max_[x];
-    }
-    pushdown(l,r,x);
-    int mid=l+r>>1;
-    return max(query_mx(l,mid,ll,rr,x<<1),query_mx(mid+1,r,ll,rr,x<<1|1));
-}
-
-void init() { //初始化
-    cin>>n>>m;
-    for(int i = 1;i <= 4 * n;i++) tag[i].mul = 1;
-    for(int i = 1;i <= 4 * n;i++) tag[i].col = -1;
-    for(int i = 1;i <= n;i++){
-        cin>>a[i];
-    }
-    build(1,n);
-}
+};
