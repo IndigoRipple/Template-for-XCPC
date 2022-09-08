@@ -1,30 +1,28 @@
 // Tarjan
 // 跑完之后，low 相同的结点属于同一个分量
-vector<vector<int>> nxt;
-int n, dfn[], low[]; // n 是结点数
-struct _ {
-    int id, visiting;
-};
+vector<int> nxt[];
+int dfn[], low[];
+bool in_stack[];
+
+void dfs(int x, int& dfn_) {
+    in_stack[x] = 1;
+    dfn[x] = low[x] = ++dfn_;
+    for (auto i: nxt[x]) {
+        if (!dfn[i]) {
+            dfs(i, dfn_);
+            low[x] = min(low[x], low[i]);
+        } else if (in_stack[i]) {
+            low[x] = min(low[x], dfn[i]);
+        }
+    }
+    in_stack[x] = 0;
+}
 
 void tarjan() {
-    int dfncnt = 0;
-    stack<_> s;
-    for (int i = 1; i <= n; ++i)
+    int dfn_ = 0;
+    for (int i = 1; i <= n; i++) {
         if (!dfn[i]) {
-            dfn[i] = low[i] = ++dfncnt;
-            s.push({i, -1});
-            while (!s.empty()) {
-                _& st = s.top();
-                if (st.visiting >= 0) low[st.id] = min(low[st.id], low[nxt[st.id][st.visiting]]);
-                ++st.visiting;
-                if (st.visiting >= nxt[st.id].size()) {
-                    s.pop();
-                    continue;
-                }
-                if (!dfn[nxt[st.id][st.visiting]]) {
-                    dfn[nxt[st.id][st.visiting]] = low[nxt[st.id][st.visiting]] = ++dfncnt;
-                    s.push({nxt[st.id][st.visiting], -1});
-                }
-            }
+            dfs(i, dfn_);
         }
+    }
 }
