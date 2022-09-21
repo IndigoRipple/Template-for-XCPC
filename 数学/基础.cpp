@@ -5,6 +5,7 @@ int gcd(int a, int b) {
 
 int power(int x, int n) {
     int ret = 1;
+    x %= mod;
     while (n) {
         if (n & 1) ret = 1LL * ret * x % mod;
         x = 1LL * x * x % mod;
