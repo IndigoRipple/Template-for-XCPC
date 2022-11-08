@@ -7,7 +7,7 @@ vector<int> prime({0});
 
 int f(int p);
 
-int f_sum(int n); // f[2...n] 的和（全部视为质数计算）
+int f_sum(int x); // f[1...x] 的和（全部视为质数计算）
 
 int f_c(int p, int c); // f(power(p, c))
 
@@ -36,7 +36,7 @@ for (int j = 1; j < prime.size(); j++) {
     int& J = prime[j];
     for (int i = 1; i <= m && J * J <= w[i]; i++) {
         int k = w[i] / J <= n_sqrt ? id1[w[i] / J] : id2[n / (w[i] / J)];
-        g[i] = (g[i] - f(J) * (g[k] - sum[j - 1]) % mod) % mod;
+        g[i] = (g[i] - g[k] + sum[j - 1]) % mod;
         if (g[i] < 0) g[i] += mod;
     }
 }

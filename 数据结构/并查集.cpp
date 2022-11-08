@@ -5,17 +5,22 @@ int find(const int& x) {
     return x == fa[x] ? x : fa[x] = find(fa[x]);
 }
 
+void uni(int u, int v) {
+    u = find(u); v = find(v);
+    if (u != v) {
+        fa[v] = u;
+        cnt[u] += cnt[v];
+    }
+}
+
 int main() {
     int n, m;
     cin >> n >> m; // n 为点数，m 为边数
-    iota(fa, fa + (n + 1), 0);
-    fill(cnt, cnt + (n + 1), 1);
+    iota(fa, fa + (n + 1), 0); // fa[i] = i
+    fill(cnt, cnt + (n + 1), 1); // cnt[i] = 1
     while (m--) {
         int u, v;
         cin >> u >> v;
-        fa[u] = find(u); fa[v] = find(v);
-        if (cnt[fa[u]] < cnt[fa[v]]) swap(u, v);
-        cnt[fa[u]] += cnt[fa[v]];
-        fa[fa[v]] = fa[u];
+        uni(u, v);
     }
 }

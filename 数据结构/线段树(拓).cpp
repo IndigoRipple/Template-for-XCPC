@@ -2,34 +2,17 @@
  * 维护区间加法、乘法、赋值、最值
  * 操作和注意事项与“简”类似
  */
-template<typename T>
+const int N, inf = INT_MAX / 2;
+int a[N], L, R;
 struct segment_tree {
-    const int N = 4e5 + 10;
-    const T inf = numeric_limits<T>::max() / 2;
-    int L, R;
-    T a[N * 4], sum[N * 4], mx[N * 4];
+    int sum[N * 4], mx[N * 4];
     struct LazyTag {
-        T add, mul; // 三种懒标记
-        optional<T> col;
+        int add, mul; // 三种懒标记
+        optional<int> col;
     } tag[N * 4];
     void pushup(int x) { //上传标记
         sum[x] = sum[x * 2] + sum[x * 2 + 1];
         mx[x] = max(mx[x * 2], mx[x * 2 + 1]);
-    }
-    void build(int l, int r, int x = 1) { // 建树
-        if (x == 1) {
-            L = l; R = r;
-            for (int i = r * 4; i > 0; i--) mul[i] = 1;
-        }
-        if (l == r) {
-            sum[x] = a[l];
-            mx[x] = max(mx[x * 2], mx[x * 2 + 1]);
-            return;
-        }
-        int mid = (l + r) / 2;
-        build(l, mid, x * 2);
-        build(mid + 1, r, x * 2 + 1);
-        pushup(x);
     }
     void pushdown(int l, int r, int x) { // 下放标记
         int ls = x * 2, rs = x * 2 + 1, mid = (l + r) / 2;
@@ -67,7 +50,22 @@ struct segment_tree {
         }
         return;
     }
-    void updata_col(int ll, int rr, T k, int l = L, int r = R, int x = 1) { // 将 [ll, rr] 赋值为 k
+    void build(int l, int r, int a[], int x = 1) { // 建树
+        if (l == r) {
+            sum[x] = mx[x] = a[l];
+            return;
+        }
+        int mid = (l + r) / 2;
+        build(l, mid, x * 2);
+        build(mid + 1, r, x * 2 + 1);
+        pushup(x);
+    }
+    void init(int a[], int l, int r) {
+        L = l; R = r;
+        for (int i = 1; i <= r * 4; i++) tag[i].mul = 1;
+        build(L, R, a);
+    }
+    void update_col(int ll, int rr, int k, int l = L, int r = R, int x = 1) { // a[ll...rr] = k
         if (r < ll || l > rr) return;
         if (l >= ll && r <= rr) {
             sum[x] = k * (r - l + 1);
@@ -79,11 +77,11 @@ struct segment_tree {
         }
         pushdown(l, r, x);
         int mid = (l + r) / 2;
-        updata_col(ll, rr, k, l, mid, x * 2);
-        updata_col(ll, rr, k, mid + 1, r, x * 2 + 1);
+        update_col(ll, rr, k, l, mid, x * 2);
+        update_col(ll, rr, k, mid + 1, r, x * 2 + 1);
         pushup(x);
     }
-    void updata_mul(int ll, int rr, T k, int l = L, int r = R, int x = 1) { // 将 [ll, rr] 乘以 k
+    void updata_mul(int ll, int rr, int k, int l = L, int r = R, int x = 1) { // a[ll...rr] *= k
         if (r < ll || l > rr) return;
         if (l >= ll && r <= rr) {
             sum[x] = sum[x] * k;
@@ -98,7 +96,7 @@ struct segment_tree {
         updata_mul(ll, rr, k, mid + 1, r, x * 2 + 1);
         pushup(x);
     }
-    void updata_add(int ll, int rr, T k, int l = L, int r = R, int x = 1) { // 将 [ll, rr] 加上 k
+    void update_add(int ll, int rr, int k, int l = L, int r = R, int x = 1) { // a[ll...rr] += k
         if (r < ll || l > rr) return;
         if (l >= ll && r <= rr) {
             sum[x] = sum[x] + k * (r - l + 1);
@@ -108,24 +106,20 @@ struct segment_tree {
         }
         pushdown(l, r, x);
         int mid = (l + r) / 2;
-        updata_add(ll, rr, k, l, mid, x * 2);
-        updata_add(ll, rr, k, mid + 1, r, x * 2 + 1);
+        update_add(ll, rr, k, l, mid, x * 2);
+        update_add(ll, rr, k, mid + 1, r, x * 2 + 1);
         pushup(x);
     }
-    T query(int ll, int rr, int l = L, int r = R, int x = 1) { // 查询 [ll, rr] 区间和
+    int query_sum(int ll, int rr, int l = L, int r = R, int x = 1) { // sum(a[ll...rr])
         if (r < ll || l > rr) return 0;
-        if (l >= ll && r <= rr) {
-            return sum[x];
-        }
+        if (l >= ll && r <= rr) return sum[x];
         pushdown(l, r, x);
         int mid = (l + r) / 2;
-        return query(ll, rr, l, mid, x * 2) + query(ll, rr, mid + 1, r, x * 2 + 1);
+        return query_sum(ll, rr, l, mid, x * 2) + query_sum(ll, rr, mid + 1, r, x * 2 + 1);
     }
-    T query_mx(int ll, int rr, int l = L, int r = R, int x = 1) { // 查询 [ll, rr] 最值
+    int query_mx(int ll, int rr, int l = L, int r = R, int x = 1) { // 查询 [ll, rr] 最值
         if (r < ll || l > rr) return -inf;
-        if (l >= ll && r <= rr) {
-            return mx[x];
-        }
+        if (l >= ll && r <= rr) return mx[x];
         pushdown(l, r, x);
         int mid = (l + r) / 2;
         return max(query_mx(ll, rr, l, mid, x / 2), query_mx(ll, rr, mid + 1, r, x * 2 + 1));

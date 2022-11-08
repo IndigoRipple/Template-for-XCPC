@@ -7,34 +7,33 @@ int power(int x, int n) {
     int ret = 1;
     x %= mod;
     while (n) {
-        if (n & 1) ret = 1LL * ret * x % mod;
+        if (n & 1) ret = ret * x % mod;
         x = 1LL * x * x % mod;
         n >>= 1;
     }
     return ret;
 }
 
-using matrix = array<array<int, N>, N>;
+using matrix = vector<vector<int>>;
 matrix operator*(const matrix& a, const matrix& b) {
-    matrix ret;
-    for (auto&& i: ret)
-        for (auto&& j: i)
-            j = 0;
-    for (int i = 0; i < N; ++i)
-        for (int j = 0; j < N; ++j)
-            for (int k = 0; k < N; ++k)
-                ret[i][k] = (ret[i][k] + 1LL * a[i][j] * b[j][k]) % mod;
+    int n = a.size();
+    matrix ret(n, vector<int>(n));
+    for (int i = 0; i < n; ++i) {
+        for (int k = 0; k < n; ++k) {
+            for (int j = 0; j < n; ++j) ret[i][k] += a[i][j] * b[j][k] % mod;
+            ret[i][k] %= mod;
+        }
+    }
     return ret;
 }
-matrix power(matrix x, int n) {
-    matrix ret;
-    for (int i = 0; i < N; ++i)
-        for (int j = 0; j < N; ++j)
-            ret[i][j] = i == j;
-    while (n) {
-        if (n & 1) ret = ret * x;
+matrix power(matrix x, int p) {
+    int n = x.size();
+    matrix ret(n, vector<int>(n));
+    for (int i = 0; i < n; ++i) ret[i][i] = 1;
+    while (p) {
+        if (p & 1) ret = ret * x;
         x = x * x;
-        n >>= 1;
+        p >>= 1;
     }
     return ret;
 }
@@ -54,18 +53,21 @@ int exgcd(int a, int b, int& x, int& y) {
 
 // p 要是质数
 inline int inv(const int& x) {
-    return power(x, mod - 2, mod);
+    return power(x, mod - 2);
 }
 
-int C(const int& n, int m) {
+int C(const int& n, int m) { // 硬算版
     m = min(m, n - m);
     if (m < 0) return 0;
     int ret = 1;
     for (int i = 0; i < m; ++i) ret = 1LL * ret * (n - i) % mod * inv(i + 1) % mod;
     return ret;
 }
+int C(const int& n, const int& m) { // 递归版
+    return min(m, n - m) < 0 ? 0 : fact[n] * inv(fact[m]) % mod * inv(fact[n - m]) % mod;
+}
 
-int A(const int& n, const int& m) {
+int A(const int& n, const int& m) { // 硬算版
     int ret = 1;
     for (int i = 0; i < m; ++i) ret = 1LL * ret * (n - i) % mod;
     return ret;

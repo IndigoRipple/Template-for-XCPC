@@ -1,11 +1,10 @@
 // 方法 1
 const long long mod = 998244353, // 或 1000000007
     base = 29; // 或 233 / 19260817 / 19491001
-int prehash[]; // 前缀的哈希值，下标从 0 开始
-prehash[0] = s[0] - 'a' + 1;
-for (int i = 1; i < n; ++i) prehash[i] = (prehash[i - 1] * base + s[i] - 'a' + 1) % mod;
+int prehash[]; // 前缀的哈希值，下标从 1 开始
+for (int i = 1; i <= n; ++i) prehash[i] = (prehash[i - 1] * base + s[i] - 'a' + 1) % mod;
 inline int gethash(const int& l, const int& r) { // 闭区间，即 [l, r]
-    int ret = (prehash[r] - 1LL * prehash[l - 1] * power(base, r - l + 1)) % mod; // power() 可以预处理存数组
+    int ret = (prehash[r] - prehash[l - 1] * power(base, r - l + 1)) % mod; // power() 可以预处理存数组
     return ret < 0 ? ret + mod : ret;
 }
 

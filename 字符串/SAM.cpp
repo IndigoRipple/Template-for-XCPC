@@ -21,7 +21,7 @@ void append(const int& ch) {
     }
     int newq = ++siz;
     fa[newq] = fa[q];
-    for (int i = 0; i < 26; i++) nxt[newq][i] = nxt[q][i];
+    for (int i = 0; i < 26; i++) nxt[newq][i] = nxt[q][i]; // 复制所有内容
     len[newq] = len[p] + 1;
     fa[q] = fa[newp] = newq;
     while (p && nxt[p][ch] == q) {

@@ -2,8 +2,7 @@
 //求最小值，初始化和查询取min
 //原数组下标从1开始使用
 const int N = 1e5+7;
-int st[N][32];
-int Log2[N];
+int st[N][32], Log2[N];
 //初始化ST表
 void initRMQ(int n,int g[]) { //n数组长度 g数组名称
 	Log2[1]=0;
